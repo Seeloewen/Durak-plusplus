@@ -1,0 +1,35 @@
+#pragma once
+
+#include <vector>
+#include "Card.h"
+#include "Player.h"
+#include "Durak.h"
+#include "Attack.h"
+#include "string"
+
+const std::string VERSION = "Dev";
+const std::string VERDATE = "20.04.2025";
+
+class Game
+{
+public:
+	std::vector<Player*> players;
+	std::vector<Card*> cardStack;
+	Card* selectedCard;
+	Attack* currentAttack;
+	CardType trump;
+	int playerId = 0;
+	bool initialized;
+
+	Player* getPlayer(int id);
+	Card* getCard(CardType type, std::string name);
+	void init(int playerNum, int playerId);
+	void initialDraw();
+	void genCards();
+	void tick();
+	void drawCard(Player* player);
+};
+
+inline Game* game;
+inline Durak* durak;
+inline QTimer* gameTimer;

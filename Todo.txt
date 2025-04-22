@@ -1,0 +1,8 @@
+TODO - Up next:
+
+- Make one universal card-register that has all cards so I don't have to search cards in stack, players inv, etc. and can rely on them all being there for sure
+- Make removing from inventory work (fix above should be most of the work)
+- Add button to leave attack and automatically start next attack
+- Add actual requirements when attacking and defending
+- Improve UI
+- Everything else
