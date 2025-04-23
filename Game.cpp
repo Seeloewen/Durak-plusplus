@@ -13,7 +13,7 @@ void Game::init(int playerNum, int playerId)
 	//Initiliaze the game
 	durak->init();
 
-	if(isServer()) genCards();
+	genCards();
 
 	//Init players
 	for (int i = 0; i < playerNum; i++)
@@ -77,7 +77,10 @@ void Game::genCards()
 				name = std::to_string(j);
 			}
 
-			cardStack.push_back(new Card(type, j, name));
+			//Add card to the register. If server, also add card to the stack
+			Card* card = new Card(type, j, name);
+			cardRegister.push_back(card);
+			if(isServer) cardStack.push_back(card);
 		}
 	}
 }
@@ -127,16 +130,8 @@ Player* Game::getPlayer(int id)
 
 Card* Game::getCard(CardType type, std::string name)
 {
-	for (Card* card : cardStack)
+	for (Card* card : cardRegister)
 	{
 		if (card->type == type && card->name == name) return card;
-	}
-
-	for(Player* player : players)
-	{
-		for (Card* card : player->hand)
-		{
-			if (card->type == type && card->name == name) return card;
-		}
 	}
 }

@@ -33,3 +33,4 @@ public:
 inline Game* game;
 inline Durak* durak;
 inline QTimer* gameTimer;
+inline std::vector<Card*> cardRegister;
