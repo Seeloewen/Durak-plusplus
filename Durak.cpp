@@ -57,7 +57,7 @@ void HandUi::setPlayer(Player* player)
 	this->player = player;
 }
 
-void HandUi::update()
+void HandUi::refresh()
 {
 	//Clear previous hand
 	for (CardUi* cardUi : cards)
@@ -65,7 +65,7 @@ void HandUi::update()
 		delete cardUi;
 	}
 	cards.clear();
-
+	
 
 	int amountCards = player->hand.size();
 	int space = 22;
@@ -80,6 +80,7 @@ void HandUi::update()
 		int x = prev;
 		CardUi* cardUi = new CardUi(x, 20, this);
 		cardUi->setCard(card);
+		cards.push_back(cardUi);
 
 		cardUi->onClick = [this, card]() {
 			if (game->currentAttack->defender == player)
@@ -95,6 +96,8 @@ void HandUi::update()
 
 		prev = prev + space + 100;
 	}
+
+	update();
 }
 
 //-- AttackUi --//
@@ -105,7 +108,7 @@ AttackUi::AttackUi(QWidget* parent) :QWidget(parent)
 	setStyleSheet("background-color: rgb(100, 200, 300);");
 }
 
-void AttackUi::update()
+void AttackUi::refresh()
 {
 	for (CardUi* cardUi : cardUis)
 	{
@@ -123,6 +126,8 @@ void AttackUi::update()
 		}
 		i++;
 	}
+
+	update();
 }
 
 void AttackUi::addAttack(Card* card, int index)

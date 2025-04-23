@@ -13,7 +13,7 @@ void Player::addCard(Card* card, bool netCall)
 {
 	hand.push_back(card);
 
-	durak->handUi->update();
+	durak->handUi->refresh();
 
 	if(!netCall) sendPacket(ADDCARD, std::format("{};{};{}", std::to_string(id), std::to_string(card->type), card->name));
 }
@@ -24,7 +24,7 @@ void Player::removeCard(Card* card, bool netCall)
 		[&](const Card* k) { return k == card; });
 	hand.erase(it);
 
-	durak->handUi->update();
+	durak->handUi->refresh();
 
 	if (!netCall) sendPacket(REMOVECARD, std::format("{};{};{}", std::to_string(id), std::to_string(card->type), card->name));
 }

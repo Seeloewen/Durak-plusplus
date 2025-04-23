@@ -16,7 +16,7 @@ private:
 public:
 	HandUi(QWidget* parent = nullptr);
 	void setPlayer(Player* player);
-	void update();
+	void refresh();
 };
 
 class AttackUi : public QWidget
@@ -24,7 +24,7 @@ class AttackUi : public QWidget
 public:
 	std::vector<CardUi*> cardUis;
 	AttackUi(QWidget* parent = nullptr);
-	void update();
+	void refresh();
 	void addAttack(Card* card, int index);
 	void addDefense(Card* card, int index);
 };

@@ -24,10 +24,10 @@ void Attack::addCard(Player* attacker, Card* card, bool netCall)
 	if (cardPairs.size() < 6)
 	{
 		cardPairs.push_back(new CardPair(card));
-		//attacker->removeCard(card, netCall);
+		if(!netCall) attacker->removeCard(card, netCall);
 	}
 
-	durak->attackUi->update();
+	durak->attackUi->refresh();
 
 	if (!netCall) sendPacket(ADDTOATTACK, std::format("{};{};{}", attacker->id, card->name, std::to_string(card->type)));
 }
@@ -41,11 +41,11 @@ void Attack::defend(Card* attack, Card* defense, bool netCall)
 		if (pair->attack == attack)
 		{
 			pair->defense = defense;
-			//defender->removeCard(defense, netCall);
+			if(!netCall) defender->removeCard(defense, netCall);
 		}
 	}
 
-	durak->attackUi->update();
+	durak->attackUi->refresh();
 
 	if (!netCall) sendPacket(DEFEND, std::format("{};{};{};{}", attack->name, std::to_string(attack->type), defense->name, std::to_string(defense->type)));
 }
