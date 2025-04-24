@@ -11,6 +11,9 @@ public:
 	std::vector<CardPair*> cardPairs;
 	bool isFinished = false;
 	bool isDefended = false;
+	int defId = 0;
+	int att1Id = 0;
+	int att2Id = 0;
 
 	Player* defender;
 	Player* attacker1;

@@ -19,6 +19,7 @@ public:
 	Attack* currentAttack;
 	CardType trump;
 	int playerId = 0;
+	int playerAmount = 0;
 	bool initialized;
 
 	Player* getPlayer(int id);
@@ -28,6 +29,7 @@ public:
 	void genCards();
 	void tick();
 	void drawCard(Player* player);
+	void stockUpCards(Player* p1, Player* p2, Player* p3);
 };
 
 inline Game* game;

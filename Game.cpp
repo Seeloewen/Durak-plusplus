@@ -12,6 +12,7 @@ void Game::init(int playerNum, int playerId)
 {
 	//Initiliaze the game
 	durak->init();
+	this->playerAmount = playerNum;
 
 	genCards();
 
@@ -80,24 +81,28 @@ void Game::genCards()
 			//Add card to the register. If server, also add card to the stack
 			Card* card = new Card(type, j, name);
 			cardRegister.push_back(card);
-			if(isServer) cardStack.push_back(card);
+			if (isServer) cardStack.push_back(card);
 		}
 	}
 }
 
 void Game::drawCard(Player* player)
 {
-	Card* card = cardStack.front();
-	cardStack.erase(cardStack.begin());
+	if(cardStack.size() != 0)
+	{
+		Card* card = cardStack.front();
+		cardStack.erase(cardStack.begin());
 
-	player->addCard(card, false);
+		player->addCard(card, false);
+	}
 }
 
 void Game::tick()
 {
+	//Initial attack
 	if (currentAttack == nullptr)
 	{
-		currentAttack = new Attack(getPlayer(0), getPlayer(- 1), getPlayer(+ 1), false);
+		currentAttack = new Attack(getPlayer(0), getPlayer(-1), getPlayer(+1), false);
 	}
 
 	//Start a new attack if last one has finished
@@ -107,25 +112,72 @@ void Game::tick()
 
 		if (currentAttack->isDefended)
 		{
-			newDef = currentAttack->defender->id + 1;
+			newDef = currentAttack->defId + 1;
 		}
 		else
 		{
-			newDef = currentAttack->defender->id + 2;
+			//If not defended, give all cards to the defender
+			for (CardPair* pair : currentAttack->cardPairs)
+			{
+				getPlayer(currentAttack->defId)->addCard(pair->attack, false);
+				if (pair->defense != nullptr) getPlayer(currentAttack->defId)->addCard(pair->defense, false);
+			}
+			newDef = currentAttack->defId + 2;
 		}
 
+		stockUpCards(getPlayer(currentAttack->defId), getPlayer(currentAttack->att1Id), getPlayer(currentAttack->att2Id));
+
+		//Clear the bord and start a new attack
+		delete currentAttack;
 		currentAttack = new Attack(getPlayer(newDef), getPlayer(newDef - 1), getPlayer(newDef + 1), false);
+		durak->attackUi->refresh();
+	}
+}
+
+void Game::stockUpCards(Player* def, Player* att1, Player* att2)
+{
+	int i = 0;
+
+	//Defender
+	i = def->hand.size();
+	if (6 - i > 0)
+	{
+		for (int j = 0; j < 6 - i; j++)
+		{
+			drawCard(def);
+		}
+	}
+
+	//Attacker 1
+	i = att1->hand.size();
+	if (6 - i > 0)
+	{
+		for (int j = 0; j < 6 - i; j++)
+		{
+			drawCard(att1);
+		}
+	}
+
+
+	//Attacker 2
+	if (att2 != att1)
+	{
+
+		i = att2->hand.size();
+		if (6 - i > 0)
+		{
+			for (int j = 0; j < 6 - i; j++)
+			{
+				drawCard(att2);
+			}
+		}
 	}
 }
 
 Player* Game::getPlayer(int id)
 {
-	int index = ((id % 6) + 6) % 6;
-
-	for (Player* p : players)
-	{
-		if (p->id == id) return p;
-	}
+	int index = ((id % playerAmount) + playerAmount) % playerAmount;
+	return players[index];
 }
 
 Card* Game::getCard(CardType type, std::string name)

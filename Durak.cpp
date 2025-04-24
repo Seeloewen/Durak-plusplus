@@ -5,6 +5,7 @@
 #include <Card.h>
 #include <qwidget.h>
 #include <LogUtil.h>
+#include <qpushbutton.h>
 
 //-- Durak --//
 
@@ -24,7 +25,10 @@ void Durak::init()
 	attackUi = new AttackUi(this);
 	lblPlayerId = new QLabel("Player: {id}", this);
 	lblCurrentDefender = new QLabel("Current Defender: {id}", this);
+	btnLeaveAttack = new QPushButton("Leave", this);
 
+	connect(btnLeaveAttack, &QPushButton::clicked, this, &Durak::btnLeaveAttack_Clicked);
+	btnLeaveAttack->move(width() - 20, 20);
 	lblCurrentDefender->move(20, 280);
 	lblPlayerId->move(20, 250);
 }
@@ -42,6 +46,11 @@ void Durak::tick()
 void Durak::timerStart()
 {
 	gameTimer->start(1000 / 60);
+}
+
+void Durak::btnLeaveAttack_Clicked()
+{
+	game->currentAttack->leave(game->getPlayer(game->playerId), false);
 }
 
 //-- HandUi --//
@@ -65,7 +74,7 @@ void HandUi::refresh()
 		delete cardUi;
 	}
 	cards.clear();
-	
+
 
 	int amountCards = player->hand.size();
 	int space = 22;
@@ -74,7 +83,6 @@ void HandUi::refresh()
 	//What even is this :skull:
 	if (amountCards > 10) space = 0.0552083333 * amountCards * amountCards * amountCards - 2.76875 * amountCards * amountCards + 41.1791667 * amountCards - 202.125;
 
-	//int space = (durak->width() - 40 - (amountCards * 100)) / (amountCards + 1);
 	for (Card* card : player->hand)
 	{
 		int x = prev;

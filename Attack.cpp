@@ -8,6 +8,9 @@ Attack::Attack(Player* defender, Player* attacker1, Player* attacker2, bool netC
 {
 	logI(std::format("Started attack with defender: {}, attacker 1: {} and attacker 2: {}", std::to_string(defender->id), std::to_string(attacker1->id), std::to_string(attacker2->id)));
 
+	defId = defender->id;
+	att1Id = attacker1->id;
+	att2Id = attacker2->id;
 	this->defender = defender;
 	this->attacker1 = attacker1;
 	this->attacker2 = attacker2;
@@ -24,7 +27,7 @@ void Attack::addCard(Player* attacker, Card* card, bool netCall)
 	if (cardPairs.size() < 6)
 	{
 		cardPairs.push_back(new CardPair(card));
-		if(!netCall) attacker->removeCard(card, netCall);
+		if (!netCall) attacker->removeCard(card, netCall);
 	}
 
 	durak->attackUi->refresh();
@@ -41,7 +44,7 @@ void Attack::defend(Card* attack, Card* defense, bool netCall)
 		if (pair->attack == attack)
 		{
 			pair->defense = defense;
-			if(!netCall) defender->removeCard(defense, netCall);
+			if (!netCall) defender->removeCard(defense, netCall);
 		}
 	}
 
@@ -53,29 +56,25 @@ void Attack::defend(Card* attack, Card* defense, bool netCall)
 void Attack::leave(Player* player, bool netCall)
 {
 	//Remove player from attack
-	if (player == attacker1)
-	{
+	if (player == attacker1) 
 		attacker1 = nullptr;
-	}
-	else if (player == attacker2)
-	{
+	if (player == attacker2) 
 		attacker2 = nullptr;
-	}
-	else if (player == defender)
-	{
-		defender = nullptr;
-	}
+	if (player == defender) defender = nullptr;
 
 	//Check if everyone left attack
-	if (defender == nullptr && attacker1 == nullptr && attacker2 == nullptr) isFinished == true;
+	if (defender == nullptr && attacker1 == nullptr && attacker2 == nullptr) isFinished = true;
 
-	//Check if attack was defended successfully
-	bool def = true;
-	for (CardPair* pair : cardPairs)
+	if (isFinished)
 	{
-		if (pair->defense == nullptr) def = false;
+		//Check if attack was defended successfully
+		bool def = true;
+		for (CardPair* pair : cardPairs)
+		{
+			if (pair->defense == nullptr) def = false;
+		}
+		isDefended = def;
 	}
-	isDefended = def;
 
 	if (!netCall) sendPacket(LEAVEATTACK, std::to_string(player->id));
 }

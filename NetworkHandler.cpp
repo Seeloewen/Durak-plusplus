@@ -131,6 +131,7 @@ void handleInit(std::vector<std::string> args)
 	int id = atoi(args[1].c_str());
 
 	client->id = id;
+	game->playerId = id;
 
 	logI(std::format("Received id {} from network.", id));
 
@@ -201,6 +202,7 @@ void handleStartAttack(std::vector<std::string> args)
 	int attId2 = atoi(args[2].c_str());
 
 	game->currentAttack = new Attack(game->getPlayer(defId), game->getPlayer(attId1), game->getPlayer(attId2), true);
+	durak->attackUi->refresh();
 }
 
 void handleAddToAttack(std::vector<std::string> args)

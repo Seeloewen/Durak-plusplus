@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "vector"
 #include "Card.h"
+#include "qpushbutton.h"
 
 class HandUi : public QWidget
 {
@@ -40,12 +41,14 @@ public:
 	void init();
 	void tick();
 	void timerStart();
+	void btnLeaveAttack_Clicked();
 
 	//Widgets
 	HandUi* handUi;
 	AttackUi* attackUi;
 	QLabel* lblPlayerId;
 	QLabel* lblCurrentDefender;
+	QPushButton* btnLeaveAttack;
 };
 
 
