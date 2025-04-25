@@ -28,7 +28,7 @@ void Game::init(int playerNum, int playerId)
 	{
 		//Shuffle cards and select the trump
 		shuffleCards(&cardStack);
-		trump = cardStack.back()->type;
+		setTrump(cardStack.back()->type);
 	}
 
 	if (isClient()) sendPacket(INIT_RESPONSE, "");
@@ -86,9 +86,15 @@ void Game::genCards()
 	}
 }
 
+void Game::setTrump(CardType type)
+{
+	trump = type;
+	durak->lblTrump->setText(QString::fromStdString(std::format("Trump: {}", strFromType(type))));
+}
+
 void Game::drawCard(Player* player)
 {
-	if(cardStack.size() != 0)
+	if (cardStack.size() != 0)
 	{
 		Card* card = cardStack.front();
 		cardStack.erase(cardStack.begin());

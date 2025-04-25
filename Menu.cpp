@@ -51,6 +51,6 @@ void Menu::pbStartGame_Clicked()
 	//Start the game for everyone
 	for (Client* client : server->clients)
 	{
-		sendPacketOnly(client->id, INIT, std::format("{};{}", std::to_string(server->clients.size() + 1), std::to_string(client->id)));
+		sendPacketOnly(client->id, INIT, std::format("{};{};{}", std::to_string(server->clients.size() + 1), std::to_string(client->id), std::to_string(game->trump)));
 	}
 }

@@ -30,6 +30,7 @@ public:
 	void tick();
 	void drawCard(Player* player);
 	void stockUpCards(Player* p1, Player* p2, Player* p3);
+	void setTrump(CardType type);
 };
 
 inline Game* game;

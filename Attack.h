@@ -24,4 +24,5 @@ public:
 	void addCard(Player* attacker, Card* card, bool netCall);
 	void defend(Card* attack, Card* defense, bool netCall);
 	void leave(Player* player, bool netCall);
+	bool karteLiegt(int value);
 };

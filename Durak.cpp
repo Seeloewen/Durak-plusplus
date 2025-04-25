@@ -25,12 +25,16 @@ void Durak::init()
 	attackUi = new AttackUi(this);
 	lblPlayerId = new QLabel("Player: {id}", this);
 	lblCurrentDefender = new QLabel("Current Defender: {id}", this);
-	btnLeaveAttack = new QPushButton("Leave", this);
+	lblTrump = new QLabel("Trump: {type}", this);
+	btnLeaveAttack = new QPushButton("Leave Attack", this);
 
 	connect(btnLeaveAttack, &QPushButton::clicked, this, &Durak::btnLeaveAttack_Clicked);
-	btnLeaveAttack->move(width() - 20, 20);
+	btnLeaveAttack->move(width() - 150, 20);
+	btnLeaveAttack->resize(120, 50);
 	lblCurrentDefender->move(20, 280);
 	lblPlayerId->move(20, 250);
+	lblCurrentDefender->resize(200, 30);
+	lblTrump->move(20, 310);
 }
 
 Durak::~Durak()

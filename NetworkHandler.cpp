@@ -129,13 +129,15 @@ void handleInit(std::vector<std::string> args)
 	//Arg Size 2
 	int playerNum = atoi(args[0].c_str());
 	int id = atoi(args[1].c_str());
+	CardType trump = static_cast<CardType>(atoi(args[2].c_str()));
 
 	client->id = id;
 	game->playerId = id;
 
-	logI(std::format("Received id {} from network.", id));
+	logI(std::format("Received id {} from network", id));
 
 	game->init(playerNum, id);
+	game->setTrump(trump);
 }
 
 void handleInitResponse(std::vector<std::string> args)

@@ -48,6 +48,7 @@ public:
 	AttackUi* attackUi;
 	QLabel* lblPlayerId;
 	QLabel* lblCurrentDefender;
+	QLabel* lblTrump;
 	QPushButton* btnLeaveAttack;
 };
 
