@@ -79,6 +79,25 @@ void Game::setPlayer(int id)
 	durak->setPlayer(player);
 }
 
+void Game::updatePlayerStatus()
+{
+	if (player == currentAttack->attacker1)
+	{
+		status = ATTACKER1;
+		durak->setPlayerStatus(ATTACKER1);
+	}
+	else if (player == currentAttack->attacker2)
+	{
+		status = ATTACKER2;
+		durak->setPlayerStatus(ATTACKER2);
+	}
+	else if (player == currentAttack->defender)
+	{
+		status = DEFENDER;
+		durak->setPlayerStatus(DEFENDER);
+	}
+}
+
 void Game::initialDraw()
 {
 	bool invalidHand = false;
@@ -144,6 +163,7 @@ void Game::tick()
 	{
 		//TODO: Make first defender the one next to guy with lowest trump
 		currentAttack = new Attack(getPlayer(0), getPlayer(-1), getPlayer(+1), false);
+		game->updatePlayerStatus();
 	}
 
 	//Start a new attack if last one has finished
@@ -172,7 +192,9 @@ void Game::tick()
 		delete currentAttack;
 		currentAttack = new Attack(getPlayer(newDef), getPlayer(newDef - 1), getPlayer(newDef + 1), false);
 		durak->attackUi->refresh();
+		game->updatePlayerStatus();
 	}
+
 }
 
 void Game::stockUpCards(Player* def, Player* att1, Player* att2)

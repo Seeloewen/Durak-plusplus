@@ -34,6 +34,7 @@ void Durak::init()
 	lblPlayerId = new QLabel(this);
 	lblCurrentDefender = new QLabel(this);
 	lblTrump = new QLabel(this);
+	lblPlayerStatus = new QLabel(this);
 	btnLeaveAttack = new QPushButton("Leave Attack", this);
 
 	connect(btnLeaveAttack, &QPushButton::clicked, this, &Durak::btnLeaveAttack_Clicked);
@@ -43,12 +44,15 @@ void Durak::init()
 	lblPlayerId->move(20, 250);
 	lblCurrentDefender->resize(200, 30);
 	lblTrump->move(20, 310);
+	lblPlayerStatus->move(400, handUi->y() - 50);
+	lblPlayerStatus->resize(400, 50);
+	lblPlayerStatus->setFont(QFont("Arial", 20));
 }
 
 void Durak::setPlayer(Player* player)
 {
-	durak->handUi->setPlayer(player);
-	durak->lblPlayerId->setText(QString::fromStdString(std::format("Player: {}", player->id)));
+	handUi->setPlayer(player);
+	lblPlayerId->setText(QString::fromStdString(std::format("Player: {}", player->id)));
 }
 
 void Durak::setDefender(int id)
@@ -58,7 +62,23 @@ void Durak::setDefender(int id)
 
 void Durak::setTrump(CardType type)
 {
-	durak->lblTrump->setText(QString::fromStdString(std::format("Trump: {}", strFromType(type))));
+	lblTrump->setText(QString::fromStdString(std::format("Trump: {}", strFromType(type))));
+}
+
+void Durak::setPlayerStatus(PlayerStatus status)
+{
+	switch (status)
+	{
+	case ATTACKER1:
+		lblPlayerStatus->setText("You are currently: Attacker 1!");
+		break;
+	case ATTACKER2:
+		lblPlayerStatus->setText("You are currently: Attacker 2!");
+		break;
+	case DEFENDER:
+		lblPlayerStatus->setText("You are currently: Defender!");
+		break;
+	}	
 }
 
 void Durak::tick()

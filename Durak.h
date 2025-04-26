@@ -25,6 +25,7 @@ public:
 	void setDefender(int id);
 	void setPlayer(Player* player);
 	void setTrump(CardType type);
+	void setPlayerStatus(PlayerStatus status);
 
 	//Widgets
 	HandUi* handUi;
@@ -32,6 +33,7 @@ public:
 	QLabel* lblPlayerId;
 	QLabel* lblCurrentDefender;
 	QLabel* lblTrump;
+	QLabel* lblPlayerStatus;
 	QPushButton* btnLeaveAttack;
 };
 

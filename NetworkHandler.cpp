@@ -204,6 +204,7 @@ void handleStartAttack(std::vector<std::string> args)
 
 	game->currentAttack = new Attack(game->getPlayer(defId), game->getPlayer(attId1), game->getPlayer(attId2), true);
 	durak->attackUi->refresh();
+	game->updatePlayerStatus();
 }
 
 void handleAddToAttack(std::vector<std::string> args)

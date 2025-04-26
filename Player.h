@@ -15,4 +15,11 @@ public:
 	void clearHand();
 };
 
+enum PlayerStatus
+{
+	ATTACKER1,
+	ATTACKER2,
+	DEFENDER
+};
+
 

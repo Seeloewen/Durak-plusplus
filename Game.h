@@ -19,6 +19,7 @@ public:
 	Attack* currentAttack;
 	CardType trump;
 	Player* player;
+	PlayerStatus status;
 	int playerAmount = 0;
 	bool initialized;
 
@@ -34,6 +35,7 @@ public:
 	void drawCard(Player* player);
 	void stockUpCards(Player* p1, Player* p2, Player* p3);
 	void setTrump(CardType type);
+	void updatePlayerStatus();
 };
 
 inline Game* game;
