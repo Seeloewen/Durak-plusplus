@@ -36,6 +36,7 @@ void Durak::init()
 	lblTrump = new QLabel(this);
 	lblPlayerStatus = new QLabel(this);
 	btnLeaveAttack = new QPushButton("Leave Attack", this);
+	teAttackLog = new QTextEdit(this);
 
 	connect(btnLeaveAttack, &QPushButton::clicked, this, &Durak::btnLeaveAttack_Clicked);
 	btnLeaveAttack->move(width() - 150, 20);
@@ -47,6 +48,9 @@ void Durak::init()
 	lblPlayerStatus->move(400, handUi->y() - 50);
 	lblPlayerStatus->resize(400, 50);
 	lblPlayerStatus->setFont(QFont("Arial", 20));
+	teAttackLog->resize(300, 150);
+	teAttackLog->move(950, handUi->y() - 200);
+	teAttackLog->setReadOnly(true);
 }
 
 void Durak::setPlayer(Player* player)
@@ -67,18 +71,12 @@ void Durak::setTrump(CardType type)
 
 void Durak::setPlayerStatus(PlayerStatus status)
 {
-	switch (status)
-	{
-	case ATTACKER1:
-		lblPlayerStatus->setText("You are currently: Attacker 1!");
-		break;
-	case ATTACKER2:
-		lblPlayerStatus->setText("You are currently: Attacker 2!");
-		break;
-	case DEFENDER:
-		lblPlayerStatus->setText("You are currently: Defender!");
-		break;
-	}	
+	lblPlayerStatus->setText(QString::fromStdString(std::format("You are currently: {}", strFromStatus(status))));
+}
+
+void Durak::writeAttackLog(std::string message)
+{
+	teAttackLog->append(QString::fromStdString(message));
 }
 
 void Durak::tick()

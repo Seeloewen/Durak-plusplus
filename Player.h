@@ -2,6 +2,14 @@
 
 #include <Card.h>
 #include <vector>
+#include <string>
+
+enum PlayerStatus
+{
+	ATTACKER1,
+	ATTACKER2,
+	DEFENDER
+};
 
 class Player
 {
@@ -13,13 +21,9 @@ public:
 	void removeCard(Card* card, bool netCall);
 	bool invalidHand();
 	void clearHand();
+	PlayerStatus getStatus();
 };
 
-enum PlayerStatus
-{
-	ATTACKER1,
-	ATTACKER2,
-	DEFENDER
-};
+std::string strFromStatus(PlayerStatus status);
 
 

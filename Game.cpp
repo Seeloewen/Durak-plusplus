@@ -81,21 +81,8 @@ void Game::setPlayer(int id)
 
 void Game::updatePlayerStatus()
 {
-	if (player == currentAttack->attacker1)
-	{
-		status = ATTACKER1;
-		durak->setPlayerStatus(ATTACKER1);
-	}
-	else if (player == currentAttack->attacker2)
-	{
-		status = ATTACKER2;
-		durak->setPlayerStatus(ATTACKER2);
-	}
-	else if (player == currentAttack->defender)
-	{
-		status = DEFENDER;
-		durak->setPlayerStatus(DEFENDER);
-	}
+	status = player->getStatus();
+	durak->setPlayerStatus(status);
 }
 
 void Game::initialDraw()
@@ -203,7 +190,7 @@ void Game::stockUpCards(Player* def, Player* att1, Player* att2)
 
 	//Attacker 1
 	while (att1->hand.size() < 6)
-	{		
+	{
 		if (cardStack.size() == 0) return;
 		drawCard(att1);
 	}

@@ -12,6 +12,8 @@ Attack::Attack(Player* defender, Player* attacker1, Player* attacker2, bool netC
 	this->attacker2 = attacker2;
 
 	durak->setDefender(defender->id);
+	durak->teAttackLog->clear();
+	durak->writeAttackLog("Started new attack");
 
 	if (!netCall) sendPacket(STARTATTACK, std::format("{};{};{}", std::to_string(defender->id), std::to_string(attacker1->id), std::to_string(attacker2->id)));
 	logI(std::format("Started attack with defender: {}, attacker 1: {} and attacker 2: {}", std::to_string(defender->id), std::to_string(attacker1->id), std::to_string(attacker2->id)));
@@ -35,7 +37,8 @@ void Attack::addCard(Player* attacker, Card* card, bool netCall)
 {
 	if (!karteLiegt(card->value)) return; //Mach die Kadde weg, die liegt nicht!!
 	if (vectorContains(quitPlayers, attacker)) return; //Attacker has already left attack
-	if (cardPairs.size() == 0 && attacker != attacker1) return;
+	if (cardPairs.size() == 0 && attacker != attacker1) return; //Only first attacker can place first card
+	if (defender->hand.size() <= getUndefendedAmount()) return; //Not more cards than the defender can defend
 
 	logI(std::format("Added card {} {} to current attack.", std::to_string(card->type), card->name));
 
@@ -87,6 +90,7 @@ void Attack::leave(Player* player, bool netCall)
 	//Remove player from attack
 	if (!vectorContains(quitPlayers, player))
 	{
+		durak->writeAttackLog(std::format("{} left attack", strFromStatus(player->getStatus())));
 		quitPlayers.push_back(player);
 	}
 
@@ -103,6 +107,21 @@ void Attack::leave(Player* player, bool netCall)
 	if (isFinished) isDefended = def;
 
 	if (!netCall) sendPacket(LEAVEATTACK, std::to_string(player->id));
+}
+
+int Attack::getUndefendedAmount()
+{
+	int undefended = 0;
+
+	for (CardPair* pair : cardPairs)
+	{
+		if (pair->defense == nullptr)
+		{
+			undefended++;
+		}
+	}
+
+	return undefended;
 }
 
 Attack::~Attack()

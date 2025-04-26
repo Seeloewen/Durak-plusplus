@@ -4,8 +4,8 @@
 #include "Server.h"
 #include "Client.h"
 
-inline Server* server;
-inline Client* client;
+inline Server* server = nullptr;
+inline Client* client = nullptr;
 
 inline int initResponses = 0;
 

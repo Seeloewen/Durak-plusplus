@@ -9,6 +9,7 @@
 #include "Card.h"
 #include "qpushbutton.h"
 #include "Widgets.h"
+#include "qtextedit.h"
 
 class Durak : public QMainWindow
 {
@@ -26,6 +27,7 @@ public:
 	void setPlayer(Player* player);
 	void setTrump(CardType type);
 	void setPlayerStatus(PlayerStatus status);
+	void writeAttackLog(std::string message);
 
 	//Widgets
 	HandUi* handUi;
@@ -34,6 +36,7 @@ public:
 	QLabel* lblCurrentDefender;
 	QLabel* lblTrump;
 	QLabel* lblPlayerStatus;
+	QTextEdit* teAttackLog;
 	QPushButton* btnLeaveAttack;
 };
 

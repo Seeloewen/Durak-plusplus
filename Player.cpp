@@ -64,3 +64,32 @@ void Player::clearHand()
 		removeCard(hand.front(), false);
 	}
 }
+
+PlayerStatus Player::getStatus()
+{
+	if (this == game->currentAttack->attacker1)
+	{
+		return ATTACKER1;
+	}
+	else if (this == game->currentAttack->attacker2)
+	{
+		return ATTACKER2;
+	}
+	else if (this == game->currentAttack->defender)
+	{
+		return DEFENDER;
+	}
+}
+
+std::string strFromStatus(PlayerStatus status)
+{
+	switch (status)
+	{
+	case ATTACKER1:
+		return "Attacker 1";
+	case ATTACKER2:
+		return "Attacker 2";
+	case DEFENDER:
+		return "Defender";
+	}
+}
