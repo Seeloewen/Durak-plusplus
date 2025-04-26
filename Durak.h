@@ -8,27 +8,7 @@
 #include "vector"
 #include "Card.h"
 #include "qpushbutton.h"
-
-class HandUi : public QWidget
-{
-private:
-	Player* player;
-	std::vector<CardUi*> cards;
-public:
-	HandUi(QWidget* parent = nullptr);
-	void setPlayer(Player* player);
-	void refresh();
-};
-
-class AttackUi : public QWidget
-{
-public:
-	std::vector<CardUi*> cardUis;
-	AttackUi(QWidget* parent = nullptr);
-	void refresh();
-	void addAttack(Card* card, int index);
-	void addDefense(Card* card, int index);
-};
+#include "Widgets.h"
 
 class Durak : public QMainWindow
 {
@@ -42,6 +22,9 @@ public:
 	void tick();
 	void timerStart();
 	void btnLeaveAttack_Clicked();
+	void setDefender(int id);
+	void setPlayer(Player* player);
+	void setTrump(CardType type);
 
 	//Widgets
 	HandUi* handUi;

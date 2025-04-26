@@ -32,8 +32,9 @@ Packet* getPacket(std::string message);
 Client* getClient(int id);
 bool isServer();
 bool isClient();
-void sendPacket(PacketType packet, std::string message);
-void sendPacketOnly(int id, PacketType packet, std::string message);
+void sendPacket(PacketType type);
+void sendPacket(PacketType type, std::string message);
+void sendPacketOnly(int id, PacketType type, std::string message);
 void handlePacket(Packet* packet);
 
 void handleInit(std::vector<std::string> args);

@@ -18,16 +18,19 @@ public:
 	Card* selectedCard;
 	Attack* currentAttack;
 	CardType trump;
-	int playerId = 0;
+	Player* player;
 	int playerAmount = 0;
 	bool initialized;
 
+	~Game();
 	Player* getPlayer(int id);
 	Card* getCard(CardType type, std::string name);
-	void init(int playerNum, int playerId);
+	void preInit(int playerAmount, int playerId);
+	void postInit();
 	void initialDraw();
 	void genCards();
 	void tick();
+	void setPlayer(int id);
 	void drawCard(Player* player);
 	void stockUpCards(Player* p1, Player* p2, Player* p3);
 	void setTrump(CardType type);

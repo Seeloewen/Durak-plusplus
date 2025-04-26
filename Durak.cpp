@@ -14,6 +14,14 @@ Durak::Durak(QWidget* parent) : QMainWindow(parent)
 	ui.setupUi(this);
 }
 
+Durak::~Durak()
+{
+	if (gameTimer != nullptr)
+	{
+		gameTimer->stop();
+	}
+}
+
 void Durak::init()
 {
 	gameTimer = new QTimer(this);
@@ -23,9 +31,9 @@ void Durak::init()
 
 	handUi = new HandUi(this);
 	attackUi = new AttackUi(this);
-	lblPlayerId = new QLabel("Player: {id}", this);
-	lblCurrentDefender = new QLabel("Current Defender: {id}", this);
-	lblTrump = new QLabel("Trump: {type}", this);
+	lblPlayerId = new QLabel(this);
+	lblCurrentDefender = new QLabel(this);
+	lblTrump = new QLabel(this);
 	btnLeaveAttack = new QPushButton("Leave Attack", this);
 
 	connect(btnLeaveAttack, &QPushButton::clicked, this, &Durak::btnLeaveAttack_Clicked);
@@ -37,9 +45,20 @@ void Durak::init()
 	lblTrump->move(20, 310);
 }
 
-Durak::~Durak()
+void Durak::setPlayer(Player* player)
 {
-	gameTimer->stop();
+	durak->handUi->setPlayer(player);
+	durak->lblPlayerId->setText(QString::fromStdString(std::format("Player: {}", player->id)));
+}
+
+void Durak::setDefender(int id)
+{
+	lblCurrentDefender->setText(QString::fromStdString(std::format("Current Defender: {}", id)));
+}
+
+void Durak::setTrump(CardType type)
+{
+	durak->lblTrump->setText(QString::fromStdString(std::format("Trump: {}", strFromType(type))));
 }
 
 void Durak::tick()
@@ -54,115 +73,5 @@ void Durak::timerStart()
 
 void Durak::btnLeaveAttack_Clicked()
 {
-	game->currentAttack->leave(game->getPlayer(game->playerId), false);
-}
-
-//-- HandUi --//
-
-HandUi::HandUi(QWidget* parent) : QWidget(parent)
-{
-	setGeometry(20, durak->height() - 200, durak->width() - 40, 180);
-	setStyleSheet("background-color: rgb(100, 200, 300);");
-}
-
-void HandUi::setPlayer(Player* player)
-{
-	this->player = player;
-}
-
-void HandUi::refresh()
-{
-	//Clear previous hand
-	for (CardUi* cardUi : cards)
-	{
-		delete cardUi;
-	}
-	cards.clear();
-
-
-	int amountCards = player->hand.size();
-	int space = 22;
-	int prev = space;
-
-	//What even is this :skull:
-	if (amountCards > 10) space = 0.0552083333 * amountCards * amountCards * amountCards - 2.76875 * amountCards * amountCards + 41.1791667 * amountCards - 202.125;
-
-	for (Card* card : player->hand)
-	{
-		int x = prev;
-		CardUi* cardUi = new CardUi(x, 20, this);
-		cardUi->setCard(card);
-		cards.push_back(cardUi);
-
-		cardUi->onClick = [this, card]() {
-			if (game->currentAttack->defender == player)
-			{
-				game->selectedCard = card;
-			}
-			else if (game->currentAttack->attacker1 == player
-				|| game->currentAttack->attacker2 == player)
-			{
-				game->currentAttack->addCard(player, card, false);
-			}
-			};
-
-		prev = prev + space + 100;
-	}
-
-	update();
-}
-
-//-- AttackUi --//
-
-AttackUi::AttackUi(QWidget* parent) :QWidget(parent)
-{
-	setGeometry(20, 20, 740, 180);
-	setStyleSheet("background-color: rgb(100, 200, 300);");
-}
-
-void AttackUi::refresh()
-{
-	for (CardUi* cardUi : cardUis)
-	{
-		delete cardUi;
-	}
-	cardUis.clear();
-
-	int i = 0;
-	for (CardPair* pair : game->currentAttack->cardPairs)
-	{
-		addAttack(pair->attack, i);
-		if (pair->defense != nullptr)
-		{
-			addDefense(pair->defense, i);
-		}
-		i++;
-	}
-
-	update();
-}
-
-void AttackUi::addAttack(Card* card, int index)
-{
-	int x = (index + 1) * 20 + index * 100;
-	int y = 20;
-	CardUi* cardUi = new CardUi(x, y, this);
-	cardUi->setCard(card);
-	cardUi->onClick = [card]()
-		{
-			if (game->selectedCard != nullptr)
-			{
-				game->currentAttack->defend(card, game->selectedCard, false);
-				game->selectedCard = nullptr;
-			}
-		};
-
-	cardUis.push_back(cardUi);
-}
-
-void AttackUi::addDefense(Card* card, int index)
-{
-	CardUi* cardUi = new CardUi((index + 1) * 20 + index * 100, 40, this);
-	cardUi->setCard(card);
-	cardUis.push_back(cardUi);
+	game->currentAttack->leave(game->player, false);
 }

@@ -3,22 +3,18 @@
 #include "NetworkHandler.h"
 #include "Game.h"
 #include "LogUtil.h"
+#include "Util.h"
 
 Attack::Attack(Player* defender, Player* attacker1, Player* attacker2, bool netCall)
 {
-	logI(std::format("Started attack with defender: {}, attacker 1: {} and attacker 2: {}", std::to_string(defender->id), std::to_string(attacker1->id), std::to_string(attacker2->id)));
-
-	defId = defender->id;
-	att1Id = attacker1->id;
-	att2Id = attacker2->id;
-
 	this->defender = defender;
 	this->attacker1 = attacker1;
 	this->attacker2 = attacker2;
 
-	durak->lblCurrentDefender->setText(QString::fromStdString(std::format("Current Defender: {}", defender->id)));
+	durak->setDefender(defender->id);
 
 	if (!netCall) sendPacket(STARTATTACK, std::format("{};{};{}", std::to_string(defender->id), std::to_string(attacker1->id), std::to_string(attacker2->id)));
+	logI(std::format("Started attack with defender: {}, attacker 1: {} and attacker 2: {}", std::to_string(defender->id), std::to_string(attacker1->id), std::to_string(attacker2->id)));
 }
 
 bool Attack::karteLiegt(int value)
@@ -38,6 +34,7 @@ bool Attack::karteLiegt(int value)
 void Attack::addCard(Player* attacker, Card* card, bool netCall)
 {
 	if (!karteLiegt(card->value)) return; //Mach die Kadde weg, die liegt nicht!!
+	if (vectorContains(quitPlayers, attacker)) return; //Attacker has already left attack
 
 	logI(std::format("Added card {} {} to current attack.", std::to_string(card->type), card->name));
 
@@ -54,6 +51,8 @@ void Attack::addCard(Player* attacker, Card* card, bool netCall)
 
 void Attack::defend(Card* attack, Card* defense, bool netCall)
 {
+	if (vectorContains(quitPlayers, defender)) return; //Defender has already left attack
+
 	if (defense->value > attack->value && attack->type == defense->type
 		|| defense->type == game->trump && attack->type != game->trump)
 	{
@@ -78,14 +77,15 @@ void Attack::defend(Card* attack, Card* defense, bool netCall)
 void Attack::leave(Player* player, bool netCall)
 {
 	//Remove player from attack
-	if (player == attacker1)
-		attacker1 = nullptr;
-	if (player == attacker2)
-		attacker2 = nullptr;
-	if (player == defender) defender = nullptr;
+	if (!vectorContains(quitPlayers, player))
+	{
+		quitPlayers.push_back(player);
+	}
 
 	//Check if everyone left attack
-	if (defender == nullptr && attacker1 == nullptr && attacker2 == nullptr) isFinished = true;
+	if (vectorContains(quitPlayers, attacker1)
+		&& vectorContains(quitPlayers, attacker2)
+		&& vectorContains(quitPlayers, defender)) isFinished = true;
 
 	if (isFinished)
 	{
@@ -105,12 +105,6 @@ Attack::~Attack()
 {
 	for (CardPair* pair : cardPairs)
 	{
-		if (isDefended)
-		{
-			delete pair->attack;
-			delete pair->defense;
-		}
-
 		delete pair;
 	}
 }

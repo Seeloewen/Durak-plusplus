@@ -5,6 +5,7 @@
 #include <iostream>
 #include <Game.h>
 #include "LogUtil.h"
+#include "Widgets.h"
 
 Packet::Packet(PacketType type, std::vector<std::string> args)
 {
@@ -68,6 +69,12 @@ void sendPacketOnly(int id, PacketType type, std::string message)
 	server->sendOnly(std::to_string(t) + ";" + message, getClient(id)->clientSocket);
 }
 
+void sendPacket(PacketType type)
+{
+	//Send packet without msg
+	sendPacket(type, "");
+}
+
 void sendPacket(PacketType type, std::string message)
 {
 	int t = type;
@@ -124,40 +131,23 @@ void handlePacket(Packet* packet)
 	}
 }
 
-void handleInit(std::vector<std::string> args)
+void handleInit(std::vector<std::string> args) //Arg Size 2
 {
-	//Arg Size 2
 	int playerNum = atoi(args[0].c_str());
 	int id = atoi(args[1].c_str());
 	CardType trump = static_cast<CardType>(atoi(args[2].c_str()));
 
-	client->id = id;
-	game->playerId = id;
-
 	logI(std::format("Received id {} from network", id));
 
-	game->init(playerNum, id);
+	client->id = id;
+	game->preInit(playerNum, id);
+	game->setPlayer(id);
 	game->setTrump(trump);
 }
 
-void handleInitResponse(std::vector<std::string> args)
+void handleInitResponse(std::vector<std::string> args) //Arg Size 0
 {
-	//Arg Size 0
-
-	//Synchronize the stack
-	for (Card* card : game->cardStack)
-	{
-		sendPacket(ADDTOSTACK, std::format("{};{};{}", card->name, std::to_string(card->type), std::to_string(card->value)));
-	}
-
-	game->initialDraw();
-
-	sendPacket(START, "");
-
-	durak->timerStart();
-
-	durak->show();
-
+	game->postInit();
 }
 
 void handleAddCard(std::vector<std::string> args)

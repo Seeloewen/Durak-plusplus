@@ -9,10 +9,10 @@
 
 enum CardType
 {
-	PIK,
-	KARO,
+	SPADES,
+	DIAMONDS,
 	HEART,
-	CROSS
+	CLUBS
 };
 
 class Card
@@ -39,9 +39,6 @@ public:
 	void mousePressEvent(QMouseEvent* event) override;
 };
 
-std::string strFromType(CardType type);
-void shuffleCards(std::vector<Card*>* cards);
-
 struct CardPair
 {
 	CardPair(Card* attack);
@@ -50,3 +47,7 @@ struct CardPair
 	Card* attack = nullptr;
 	Card* defense = nullptr;
 };
+
+std::string strFromType(CardType type);
+std::string nameFromValue(int value);
+void shuffleCards(std::vector<Card*>* cards);

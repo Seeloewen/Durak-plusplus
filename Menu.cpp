@@ -46,7 +46,7 @@ void Menu::pbStartServer_Clicked()
 
 void Menu::pbStartGame_Clicked()
 {
-	game->init(server->clients.size() + 1, 0);
+	game->preInit(server->clients.size() + 1, 0);
 
 	//Start the game for everyone
 	for (Client* client : server->clients)

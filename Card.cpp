@@ -19,18 +19,37 @@ Card::Card(CardType type, int value, std::string name)
 
 std::string strFromType(CardType type)
 {
+	//Get the string from the type
 	switch (type)
 	{
-	case PIK:
-		return "Pik";
-	case KARO:
-		return "Karo";
+	case SPADES:
+		return "Spades";
+	case DIAMONDS:
+		return "Diamonds";
 	case HEART:
 		return "Heart";
-	case CROSS:
-		return "Cross";
+	case CLUBS:
+		return "Clubs";
 	default:
 		return "Unknown";
+	}
+}
+
+std::string nameFromValue(int value)
+{
+	//Get the name from the value
+	switch (value)
+	{
+	case 11:
+		return "Jack";
+	case 12:
+		return "Queen";
+	case 13:
+		return "King";
+	case 14:
+		return "Ace";
+	default:
+		return std::to_string(value);
 	}
 }
 
@@ -51,10 +70,12 @@ CardUi::CardUi(int x, int y, QWidget* parent) : QWidget(parent)
 	lblName = new QLabel("None", this);
 	lblName->setStyleSheet("color: black; font-size: 18px; font-weight: bold");
 	lblName->move(10, 10);
+	lblName->resize(200, lblName->height());
 
 	lblType = new QLabel("None", this);
 	lblType->setStyleSheet("color: black; font-size: 18px; font-weight: bold");
 	lblType->move(10, 40);
+	lblType->resize(200, lblType->height());
 
 	show();
 }

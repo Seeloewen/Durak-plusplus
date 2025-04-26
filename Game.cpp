@@ -8,21 +8,35 @@
 #include "LogUtil.h"
 #include "NetworkHandler.h"
 
-void Game::init(int playerNum, int playerId)
+Game::~Game()
+{
+	for (Player* p : players)
+	{
+		delete p;
+	}
+
+	for (Card* card : cardRegister)
+	{
+		delete card;
+	}
+
+	delete currentAttack;
+}
+
+void Game::preInit(int playerAmount, int playerId)
 {
 	//Initiliaze the game
 	durak->init();
-	this->playerAmount = playerNum;
-
 	genCards();
+	this->playerAmount = playerAmount;
 
 	//Init players
-	for (int i = 0; i < playerNum; i++)
+	for (int i = 0; i < playerAmount; i++)
 	{
 		players.push_back(new Player(i));
 	}
-	durak->handUi->setPlayer(getPlayer(playerId));
-	durak->lblPlayerId->setText(QString::fromStdString(std::format("Player: {}", playerId)));
+
+	setPlayer(playerId);
 
 	if (isServer())
 	{
@@ -31,10 +45,30 @@ void Game::init(int playerNum, int playerId)
 		setTrump(cardStack.back()->type);
 	}
 
-	if (isClient()) sendPacket(INIT_RESPONSE, "");
-	//TODO: Check if "Neumischung" (player has 5 of one card type or more)
+	if (isClient()) sendPacket(INIT_RESPONSE); //If client, let server know init is done
+}
 
-	//TODO: Make first defender the one next to guy with lowest trump
+void Game::postInit() //Only run by the server after all clients are initialized
+{
+	//Synchronize the stack
+	for (Card* card : game->cardStack)
+	{
+		sendPacket(ADDTOSTACK, std::format("{};{};{}", card->name, std::to_string(card->type), std::to_string(card->value)));
+	}
+
+	game->initialDraw();
+
+	//Start the game
+	sendPacket(START);
+	durak->timerStart();
+	durak->show();
+}
+
+void Game::setPlayer(int id)
+{
+	//Set the player that is playing on this instance
+	player = getPlayer(id);
+	durak->setPlayer(player);
 }
 
 void Game::initialDraw()
@@ -47,6 +81,8 @@ void Game::initialDraw()
 			drawCard(player);
 		}
 	}
+
+	//TODO: Check for "Neumischung"
 }
 
 void Game::genCards()
@@ -56,30 +92,10 @@ void Game::genCards()
 	{
 		CardType type = static_cast<CardType>(i);
 
-		for (int j = 6; j < 15; j++)
+		for (int value = 6; value < 15; value++)
 		{
-			std::string name;
-
-			switch (j)
-			{
-			case 11:
-				name = "Jack";
-				break;
-			case 12:
-				name = "Queen";
-				break;
-			case 13:
-				name = "King";
-				break;
-			case 14:
-				name = "Ace";
-				break;
-			default:
-				name = std::to_string(j);
-			}
-
 			//Add card to the register. If server, also add card to the stack
-			Card* card = new Card(type, j, name);
+			Card* card = new Card(type, value, nameFromValue(value));
 			cardRegister.push_back(card);
 			if (isServer) cardStack.push_back(card);
 		}
@@ -89,13 +105,14 @@ void Game::genCards()
 void Game::setTrump(CardType type)
 {
 	trump = type;
-	durak->lblTrump->setText(QString::fromStdString(std::format("Trump: {}", strFromType(type))));
+	durak->setTrump(type);
 }
 
 void Game::drawCard(Player* player)
 {
 	if (cardStack.size() != 0)
 	{
+		//Take topmost card from the stack and add it to player's inv
 		Card* card = cardStack.front();
 		cardStack.erase(cardStack.begin());
 
@@ -108,6 +125,7 @@ void Game::tick()
 	//Initial attack
 	if (currentAttack == nullptr)
 	{
+		//TODO: Make first defender the one next to guy with lowest trump
 		currentAttack = new Attack(getPlayer(0), getPlayer(-1), getPlayer(+1), false);
 	}
 
@@ -118,20 +136,20 @@ void Game::tick()
 
 		if (currentAttack->isDefended)
 		{
-			newDef = currentAttack->defId + 1;
+			newDef = currentAttack->defender->id + 1;
 		}
 		else
 		{
 			//If not defended, give all cards to the defender
 			for (CardPair* pair : currentAttack->cardPairs)
 			{
-				getPlayer(currentAttack->defId)->addCard(pair->attack, false);
-				if (pair->defense != nullptr) getPlayer(currentAttack->defId)->addCard(pair->defense, false);
+				currentAttack->defender->addCard(pair->attack, false);
+				if (pair->defense != nullptr) currentAttack->defender->addCard(pair->defense, false);
 			}
-			newDef = currentAttack->defId + 2;
+			newDef = currentAttack->defender->id + 2;
 		}
 
-		stockUpCards(getPlayer(currentAttack->defId), getPlayer(currentAttack->att1Id), getPlayer(currentAttack->att2Id));
+		stockUpCards(currentAttack->defender, currentAttack->attacker1, currentAttack->attacker2);
 
 		//Clear the bord and start a new attack
 		delete currentAttack;
