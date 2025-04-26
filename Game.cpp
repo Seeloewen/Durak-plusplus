@@ -50,6 +50,8 @@ void Game::preInit(int playerAmount, int playerId)
 	}
 
 	if (isClient()) sendPacket(INIT_RESPONSE); //If client, let server know init is done
+
+	logI("PreInit completed");
 }
 
 void Game::postInit() //Only run by the server after all clients are initialized
@@ -66,6 +68,8 @@ void Game::postInit() //Only run by the server after all clients are initialized
 	sendPacket(START);
 	durak->timerStart();
 	durak->show();
+
+	logI("PostInit completed");
 }
 
 void Game::setPlayer(int id)
@@ -77,16 +81,25 @@ void Game::setPlayer(int id)
 
 void Game::initialDraw()
 {
+	bool invalidHand = false;
+
 	//Give each player 6 cards
 	for (Player* player : players)
 	{
 		for (int i = 0; i < 6; i++)
 		{
 			drawCard(player);
+			if (player->invalidHand()) invalidHand = true;
 		}
 	}
 
-	//TODO: Check for "Neumischung"
+	//Check for "Neumischung"
+	if (invalidHand)
+	{
+		logI("Redrawing cards because a player had an invalid hand");
+		for (Player* player : players) player->clearHand();
+		initialDraw();
+	}
 }
 
 void Game::genCards()
@@ -167,8 +180,9 @@ void Game::stockUpCards(Player* def, Player* att1, Player* att2)
 	int i = 0;
 
 	//Attacker 1
-	while(att1->hand.size() < 6)
-	{
+	while (att1->hand.size() < 6)
+	{		
+		if (cardStack.size() == 0) return;
 		drawCard(att1);
 	}
 
@@ -177,6 +191,7 @@ void Game::stockUpCards(Player* def, Player* att1, Player* att2)
 	{
 		while (att2->hand.size() < 6)
 		{
+			if (cardStack.size() == 0) return;
 			drawCard(att2);
 		}
 	}
@@ -184,6 +199,7 @@ void Game::stockUpCards(Player* def, Player* att1, Player* att2)
 	//Defender
 	while (def->hand.size() < 6)
 	{
+		if (cardStack.size() == 0) return;
 		drawCard(def);
 	}
 }

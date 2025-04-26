@@ -7,6 +7,8 @@
 inline Server* server;
 inline Client* client;
 
+inline int initResponses = 0;
+
 enum PacketType
 {
 	INIT = 0,

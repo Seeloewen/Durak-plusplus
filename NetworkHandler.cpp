@@ -147,7 +147,16 @@ void handleInit(std::vector<std::string> args) //Arg Size 2
 
 void handleInitResponse(std::vector<std::string> args) //Arg Size 0
 {
-	game->postInit();
+	initResponses++;
+
+	if(isServer())
+	{
+		//Start game when all clients have been initialized
+		if (initResponses == server->clients.size())
+		{
+			game->postInit();
+		}
+	}
 }
 
 void handleAddCard(std::vector<std::string> args)

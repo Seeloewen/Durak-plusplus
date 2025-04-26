@@ -11,6 +11,8 @@ public:
 	int id;
 	void addCard(Card* card, bool netCall);
 	void removeCard(Card* card, bool netCall);
+	bool invalidHand();
+	void clearHand();
 };
 
 
