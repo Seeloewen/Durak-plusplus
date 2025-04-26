@@ -110,6 +110,7 @@
     <ClCompile Include="NetworkHandler.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Widgets.cpp" />
     <QtRcc Include="Durak.qrc" />
     <QtUic Include="Durak.ui" />
@@ -126,6 +127,7 @@
     <ClInclude Include="Card.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Widgets.h" />
     <QtMoc Include="Menu.h" />

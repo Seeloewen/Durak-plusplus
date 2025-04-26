@@ -21,22 +21,8 @@ public:
 	CardType type;
 	int value;
 	std::string name;
-	bool isTrump;
-	int tablePos = -1;
+	std::string id;
 	Card(CardType type, int value, std::string name);
-};
-
-class CardUi : QWidget
-{
-public:
-	QLabel* lblName;
-	QLabel* lblType;
-	Card* card;
-	CardUi(int x, int y, QWidget* parent = nullptr);
-	~CardUi();
-	void setCard(Card* card);
-	std::function<void()> onClick;
-	void mousePressEvent(QMouseEvent* event) override;
 };
 
 struct CardPair

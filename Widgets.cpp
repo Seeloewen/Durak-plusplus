@@ -1,5 +1,6 @@
-#include <Widgets.h>
-#include <Game.h>
+#include "Widgets.h"
+#include "Game.h"
+#include "TextureManager.h"
 
 //-- HandUi --//
 
@@ -109,4 +110,37 @@ void AttackUi::addDefense(Card* card, int index)
 	CardUi* cardUi = new CardUi((index + 1) * 20 + index * 100, 60, this);
 	cardUi->setCard(card);
 	cardUis.push_back(cardUi);
+}
+
+//-- CardUi --//
+
+CardUi::CardUi(int x, int y, QWidget* parent) : QWidget(parent)
+{
+	setGeometry(x, y, 100, 140);
+
+	image = new QLabel(this);
+	image->resize(100, 140);
+
+	show();
+}
+
+CardUi::~CardUi()
+{
+	hide();
+}
+
+void CardUi::mousePressEvent(QMouseEvent* event)
+{
+	onClick();
+}
+
+void CardUi::setCard(Card* card)
+{
+	this->card = card;
+
+	QPixmap pixmap = QPixmap::fromImage(*getTexture(card->id));
+	QPixmap scaledPixmap = pixmap.scaled(image->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+	image->setPixmap(scaledPixmap);
+
+	update();
 }

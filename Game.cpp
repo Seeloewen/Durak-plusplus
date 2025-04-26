@@ -2,11 +2,12 @@
 #include "Player.h"
 #include "Card.h"
 #include <iostream>
-#include <Game.h>
+#include "Game.h"
 #include "Durak.h"
 #include "Attack.h"
 #include "LogUtil.h"
 #include "NetworkHandler.h"
+#include "TextureManager.h"
 
 Game::~Game()
 {
@@ -21,11 +22,14 @@ Game::~Game()
 	}
 
 	delete currentAttack;
+
+	cleanUpTextures();
 }
 
 void Game::preInit(int playerAmount, int playerId)
 {
 	//Initiliaze the game
+	initTextures();
 	durak->init();
 	genCards();
 	this->playerAmount = playerAmount;

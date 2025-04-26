@@ -1,0 +1,148 @@
+{
+    "textures":[
+        {
+            "id": "Clubs_6",
+            "file": "6_of_Clubs.png"
+        },
+        {
+            "id": "Clubs_7",
+            "file": "7_of_Clubs.png"
+        },
+        {
+            "id": "Clubs_8",
+            "file": "8_of_Clubs.png"
+        },
+        {
+            "id": "Clubs_9",
+            "file": "9_of_Clubs.png"
+        },
+        {
+            "id": "Clubs_10",
+            "file": "10_of_Clubs.png"
+        },
+        {
+            "id": "Clubs_Jack",
+            "file": "Jack_of_Clubs.png"
+        },
+        {
+            "id": "Clubs_Queen",
+            "file": "Queen_of_Clubs.png"
+        },
+        {
+            "id": "Clubs_King",
+            "file": "King_of_Clubs.png"
+        },
+        {
+            "id": "Clubs_Ace",
+            "file": "Ace_of_Clubs.png"
+        },
+        {
+            "id": "Diamonds_6",
+            "file": "6_of_Diamonds.png"
+        },
+        {
+            "id": "Diamonds_7",
+            "file": "7_of_Diamonds.png"
+        },
+        {
+            "id": "Diamonds_8",
+            "file": "8_of_Diamonds.png"
+        },
+        {
+            "id": "Diamonds_9",
+            "file": "9_of_Diamonds.png"
+        },
+        {
+            "id": "Diamonds_10",
+            "file": "10_of_Diamonds.png"
+        },
+        {
+            "id": "Diamonds_Jack",
+            "file": "Jack_of_Diamonds.png"
+        },
+        {
+            "id": "Diamonds_Queen",
+            "file": "Queen_of_Diamonds.png"
+        },
+        {
+            "id": "Diamonds_King",
+            "file": "King_of_Diamonds.png"
+        },
+        {
+            "id": "Diamonds_Ace",
+            "file": "Ace_of_Diamonds.png"
+        },
+        {
+            "id": "Hearts_6",
+            "file": "6_of_Hearts.png"
+        },
+        {
+            "id": "Hearts_7",
+            "file": "7_of_Hearts.png"
+        },
+        {
+            "id": "Hearts_8",
+            "file": "8_of_Hearts.png"
+        },
+        {
+            "id": "Hearts_9",
+            "file": "9_of_Hearts.png"
+        },
+        {
+            "id": "Hearts_10",
+            "file": "10_of_Hearts.png"
+        },
+        {
+            "id": "Hearts_Jack",
+            "file": "Jack_of_Hearts.png"
+        },
+        {
+            "id": "Hearts_Queen",
+            "file": "Queen_of_Hearts.png"
+        },
+        {
+            "id": "Hearts_King",
+            "file": "King_of_Hearts.png"
+        },
+        {
+            "id": "Hearts_Ace",
+            "file": "Ace_of_Hearts.png"
+        },
+        {
+            "id": "Spades_6",
+            "file": "6_of_Spades.png"
+        },
+        {
+            "id": "Spades_7",
+            "file": "7_of_Spades.png"
+        },
+        {
+            "id": "Spades_8",
+            "file": "8_of_Spades.png"
+        },
+        {
+            "id": "Spades_9",
+            "file": "9_of_Spades.png"
+        },
+        {
+            "id": "Spades_10",
+            "file": "10_of_Spades.png"
+        },
+        {
+            "id": "Spades_Jack",
+            "file": "Jack_of_Spades.png"
+        },
+        {
+            "id": "Spades_Queen",
+            "file": "Queen_of_Spades.png"
+        },
+        {
+            "id": "Spades_King",
+            "file": "King_of_Spades.png"
+        },
+        {
+            "id": "Spades_Ace",
+            "file": "Ace_of_Spades.png"
+        }
+    ]
+}

@@ -8,7 +8,7 @@
 #include "string"
 
 const std::string VERSION = "Dev";
-const std::string VERDATE = "20.04.2025";
+const std::string VERDATE = "26.04.2025";
 
 class Game
 {
