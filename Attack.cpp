@@ -35,6 +35,7 @@ void Attack::addCard(Player* attacker, Card* card, bool netCall)
 {
 	if (!karteLiegt(card->value)) return; //Mach die Kadde weg, die liegt nicht!!
 	if (vectorContains(quitPlayers, attacker)) return; //Attacker has already left attack
+	if (cardPairs.size() == 0 && attacker != attacker1) return;
 
 	logI(std::format("Added card {} {} to current attack.", std::to_string(card->type), card->name));
 
@@ -76,6 +77,13 @@ void Attack::defend(Card* attack, Card* defense, bool netCall)
 
 void Attack::leave(Player* player, bool netCall)
 {
+	//Check if attack was defended successfully
+	bool def = true;
+	for (CardPair* pair : cardPairs)
+	{
+		if (pair->defense == nullptr) def = false;
+	}
+
 	//Remove player from attack
 	if (!vectorContains(quitPlayers, player))
 	{
@@ -87,16 +95,12 @@ void Attack::leave(Player* player, bool netCall)
 		&& vectorContains(quitPlayers, attacker2)
 		&& vectorContains(quitPlayers, defender)) isFinished = true;
 
-	if (isFinished)
-	{
-		//Check if attack was defended successfully
-		bool def = true;
-		for (CardPair* pair : cardPairs)
-		{
-			if (pair->defense == nullptr) def = false;
-		}
-		isDefended = def;
-	}
+	//Or: both attackers quit and everything is defended
+	if (vectorContains(quitPlayers, attacker1)
+		&& vectorContains(quitPlayers, attacker2)
+		&& def) isFinished = true;
+
+	if (isFinished) isDefended = def;
 
 	if (!netCall) sendPacket(LEAVEATTACK, std::to_string(player->id));
 }
