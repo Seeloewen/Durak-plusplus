@@ -166,39 +166,25 @@ void Game::stockUpCards(Player* def, Player* att1, Player* att2)
 {
 	int i = 0;
 
-	//Defender
-	i = def->hand.size();
-	if (6 - i > 0)
-	{
-		for (int j = 0; j < 6 - i; j++)
-		{
-			drawCard(def);
-		}
-	}
-
 	//Attacker 1
-	i = att1->hand.size();
-	if (6 - i > 0)
+	while(att1->hand.size() < 6)
 	{
-		for (int j = 0; j < 6 - i; j++)
-		{
-			drawCard(att1);
-		}
+		drawCard(att1);
 	}
-
 
 	//Attacker 2
 	if (att2 != att1)
 	{
-
-		i = att2->hand.size();
-		if (6 - i > 0)
+		while (att2->hand.size() < 6)
 		{
-			for (int j = 0; j < 6 - i; j++)
-			{
-				drawCard(att2);
-			}
+			drawCard(att2);
 		}
+	}
+
+	//Defender
+	while (def->hand.size() < 6)
+	{
+		drawCard(def);
 	}
 }
 
