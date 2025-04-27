@@ -141,97 +141,79 @@ void handleInit(std::vector<std::string> args) //Arg Size 2
 
 	client->id = id;
 	game->preInit(playerNum, id);
-	game->setPlayer(id);
+	game->setCurrentPlayer(id);
 	game->setTrump(trump);
 }
 
 void handleInitResponse(std::vector<std::string> args) //Arg Size 0
 {
-	initResponses++;
+	server->initResponses++;
 
 	if(isServer())
 	{
 		//Start game when all clients have been initialized
-		if (initResponses == server->clients.size())
+		if (server->initResponses == server->clients.size())
 		{
 			game->postInit();
 		}
 	}
 }
 
-void handleAddCard(std::vector<std::string> args)
-{
-	//Arg Size 3
+void handleAddCard(std::vector<std::string> args) //Arg Size 2
+{	
 	Player* player = game->getPlayer(atoi(args[0].c_str()));
-	CardType type = static_cast<CardType>(atoi(args[1].c_str()));
-	std::string name = args[2];
+	std::string cardId = args[1];
 
-	player->addCard(game->getCard(type, name), true);
+	player->addCard(getCard(cardId), true);
 }
 
-void handleRemoveCard(std::vector<std::string> args)
+void handleRemoveCard(std::vector<std::string> args) //Arg Size 2
 {
-	//Arg Size 3
 	Player* player = game->getPlayer(atoi(args[0].c_str()));
-	CardType type = static_cast<CardType>(atoi(args[1].c_str()));
-	std::string name = args[2];
+	std::string cardId = args[1];
 
-	player->removeCard(game->getCard(type, name), true);
+	player->removeCard(getCard(cardId), true);
 }
 
-void handleAddToStack(std::vector<std::string> args)
-{
-	//Arg Size 3
-	std::string name = args[0];
-	CardType type = static_cast<CardType>(atoi(args[1].c_str()));
-	int value = atoi(args[2].c_str());
+void handleAddToStack(std::vector<std::string> args) //Arg Size 1
+{	
+	std::string id = args[0];
 
-	game->cardStack.push_back(new Card(type, value, name));
+	game->cardStack.push_back(getCard(id));
 }
 
-void handleStart(std::vector<std::string> args)
+void handleStart(std::vector<std::string> args)	//Arg Size 0
 {
-	//Arg Size 0
 	durak->show();
 }
 
-void handleStartAttack(std::vector<std::string> args)
-{
-	//Arg Size 3
+void handleStartAttack(std::vector<std::string> args) //Arg Size 3
+{	
 	int defId = atoi(args[0].c_str());
 	int attId1 = atoi(args[1].c_str());
 	int attId2 = atoi(args[2].c_str());
 
-	game->currentAttack = new Attack(game->getPlayer(defId), game->getPlayer(attId1), game->getPlayer(attId2), true);
-	durak->attackUi->refresh();
-	game->updatePlayerStatus();
+	Attack::createAttack(game->getPlayer(defId), game->getPlayer(attId1), game->getPlayer(attId2), true);
 }
 
-void handleAddToAttack(std::vector<std::string> args)
-{
-	//Arg Size 2
+void handleAddToAttack(std::vector<std::string> args) //Arg Size 2
+{	
 	int attId = atoi(args[0].c_str());
-	std::string name = args[1];
-	CardType type = static_cast<CardType>(atoi(args[2].c_str()));
+	std::string cardId = args[1];
 
-	game->currentAttack->addCard(game->getPlayer(attId), game->getCard(type, name), true);
+	game->currentAttack->addCard(game->getPlayer(attId), getCard(cardId), true);
 }
 
-void handleDefend(std::vector<std::string> args)
-{
-	//Arg Size 4
-	std::string nameAtt = args[0];
-	CardType typeAtt = static_cast<CardType>(atoi(args[1].c_str()));
-	std::string nameDef = args[2];
-	CardType typeDef = static_cast<CardType>(atoi(args[3].c_str()));
+void handleDefend(std::vector<std::string> args) //Arg Size 2
+{	
+	std::string attId = args[0];
+	std::string defId = args[1];
 
-	game->currentAttack->defend(game->getCard(typeAtt, nameAtt), game->getCard(typeDef, nameDef), true);
+	game->currentAttack->defend(getCard(attId), getCard(defId), true);
 }
 
-void handleLeaveAttack(std::vector<std::string> args)
+void handleLeaveAttack(std::vector<std::string> args) //Arg Size 1
 {
-	//Arg Size 1
 	int id = atoi(args[0].c_str());
-
 	game->currentAttack->leave(game->getPlayer(id), true);
 }

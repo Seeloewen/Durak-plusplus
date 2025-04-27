@@ -8,7 +8,9 @@ enum PlayerStatus
 {
 	ATTACKER1,
 	ATTACKER2,
-	DEFENDER
+	DEFENDER,
+	FINISHED,
+	NONE
 };
 
 class Player

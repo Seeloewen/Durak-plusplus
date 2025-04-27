@@ -14,6 +14,7 @@ private:
 
 public:
     std::vector<Client*> clients;
+    int initResponses = 0;
 
     void start(unsigned int port);
     void send(std::string message);

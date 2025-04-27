@@ -7,6 +7,11 @@
 
 class Attack
 {
+private:
+	Attack(Player* def, Player* att1, Player* att2);
+	bool karteLiegt(int value);
+	int getUndefendedAmount();
+
 public:
 	std::vector<CardPair*> cardPairs;
 	std::vector<Player*> quitPlayers;
@@ -17,11 +22,11 @@ public:
 	Player* attacker1;
 	Player* attacker2;
 
-	Attack(Player* defender, Player* attacker1, Player* attacker2, bool netCall);
 	~Attack();
+	static void createAttack(Player* def, Player* att1, Player* att2, bool netCall);
 	void addCard(Player* attacker, Card* card, bool netCall);
 	void defend(Card* attack, Card* defense, bool netCall);
 	void leave(Player* player, bool netCall);
-	bool karteLiegt(int value);
-	int getUndefendedAmount();
+	void finish();
 };
+

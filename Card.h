@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdlib.h>
 #include <string>
 #include <qrect.h>
 #include <qwidget.h>
@@ -22,7 +21,10 @@ public:
 	int value;
 	std::string name;
 	std::string id;
+
 	Card(CardType type, int value, std::string name);
+	static std::string strFromType(CardType type);
+	static std::string nameFromValue(int value);
 };
 
 struct CardPair
@@ -34,6 +36,4 @@ struct CardPair
 	Card* defense = nullptr;
 };
 
-std::string strFromType(CardType type);
-std::string nameFromValue(int value);
 void shuffleCards(std::vector<Card*>* cards);

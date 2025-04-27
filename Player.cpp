@@ -15,7 +15,7 @@ void Player::addCard(Card* card, bool netCall)
 
 	durak->handUi->refresh();
 
-	if (!netCall) sendPacket(ADDCARD, std::format("{};{};{}", std::to_string(id), std::to_string(card->type), card->name));
+	if (!netCall) sendPacket(ADDCARD, std::format("{};{}", std::to_string(id), card->id));
 }
 
 void Player::removeCard(Card* card, bool netCall)
@@ -26,7 +26,7 @@ void Player::removeCard(Card* card, bool netCall)
 
 	durak->handUi->refresh();
 
-	if (!netCall) sendPacket(REMOVECARD, std::format("{};{};{}", std::to_string(id), std::to_string(card->type), card->name));
+	if (!netCall) sendPacket(REMOVECARD, std::format("{};{}", std::to_string(id), card->id));
 }
 
 bool Player::invalidHand()
@@ -67,7 +67,11 @@ void Player::clearHand()
 
 PlayerStatus Player::getStatus()
 {
-	if (this == game->currentAttack->attacker1)
+	if (hand.size() == 0)
+	{
+		return FINISHED;
+	}
+	else if (this == game->currentAttack->attacker1)
 	{
 		return ATTACKER1;
 	}
@@ -78,6 +82,10 @@ PlayerStatus Player::getStatus()
 	else if (this == game->currentAttack->defender)
 	{
 		return DEFENDER;
+	}
+	else
+	{
+		return NONE;
 	}
 }
 

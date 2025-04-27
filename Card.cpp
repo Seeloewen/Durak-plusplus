@@ -1,8 +1,8 @@
 #include "Card.h"
-#include "qlabel.h"
+#include <qlabel.h>
 #include "Game.h"
-#include "qwidget.h"
-#include "qpainter.h"
+#include <qwidget.h>
+#include <qpainter.h>
 #include <qstring.h>
 #include <algorithm>
 #include <random>
@@ -19,7 +19,7 @@ Card::Card(CardType type, int value, std::string name)
 	id = std::format("{}_{}", strFromType(type), name);
 }
 
-std::string strFromType(CardType type)
+std::string Card::strFromType(CardType type)
 {
 	//Get the string from the type
 	switch (type)
@@ -37,7 +37,7 @@ std::string strFromType(CardType type)
 	}
 }
 
-std::string nameFromValue(int value)
+std::string Card::nameFromValue(int value)
 {
 	//Get the name from the value
 	switch (value)

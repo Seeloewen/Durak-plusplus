@@ -40,7 +40,7 @@ void Game::preInit(int playerAmount, int playerId)
 		players.push_back(new Player(i));
 	}
 
-	setPlayer(playerId);
+	setCurrentPlayer(playerId);
 
 	if (isServer())
 	{
@@ -59,7 +59,7 @@ void Game::postInit() //Only run by the server after all clients are initialized
 	//Synchronize the stack
 	for (Card* card : game->cardStack)
 	{
-		sendPacket(ADDTOSTACK, std::format("{};{};{}", card->name, std::to_string(card->type), std::to_string(card->value)));
+		sendPacket(ADDTOSTACK, card->id);
 	}
 
 	game->initialDraw();
@@ -69,20 +69,32 @@ void Game::postInit() //Only run by the server after all clients are initialized
 	durak->timerStart();
 	durak->show();
 
+	//Initial attack
+	//TODO: Make first defender the one next to guy with lowest trump
+	Attack::createAttack(getPlayer(0), getPlayer(-1), getPlayer(+1), false);
+
 	logI("PostInit completed");
 }
 
-void Game::setPlayer(int id)
+void Game::tick()
+{
+	if (currentAttack->isFinished) //Start a new attack if last one has finished
+	{
+		//Stock up cards and calculate new defender before finishing
+		int newDef = currentAttack->defender->id + (currentAttack->isDefended ? 1 : 2);
+		stockUpCards(currentAttack->defender, currentAttack->attacker1, currentAttack->attacker2);
+
+		//Clear the bord and start a new attack
+		currentAttack->finish();
+		Attack::createAttack(getPlayer(newDef), getPlayer(newDef - 1), getPlayer(newDef + 1), false);
+	}
+}
+
+void Game::setCurrentPlayer(int id)
 {
 	//Set the player that is playing on this instance
 	player = getPlayer(id);
 	durak->setPlayer(player);
-}
-
-void Game::updatePlayerStatus()
-{
-	status = player->getStatus();
-	durak->setPlayerStatus(status);
 }
 
 void Game::initialDraw()
@@ -118,7 +130,7 @@ void Game::genCards()
 		for (int value = 6; value < 15; value++)
 		{
 			//Add card to the register. If server, also add card to the stack
-			Card* card = new Card(type, value, nameFromValue(value));
+			Card* card = new Card(type, value, Card::nameFromValue(value));
 			cardRegister.push_back(card);
 			if (isServer) cardStack.push_back(card);
 		}
@@ -141,47 +153,6 @@ void Game::drawCard(Player* player)
 
 		player->addCard(card, false);
 	}
-}
-
-void Game::tick()
-{
-	//Initial attack
-	if (currentAttack == nullptr)
-	{
-		//TODO: Make first defender the one next to guy with lowest trump
-		currentAttack = new Attack(getPlayer(0), getPlayer(-1), getPlayer(+1), false);
-		game->updatePlayerStatus();
-	}
-
-	//Start a new attack if last one has finished
-	if (currentAttack->isFinished)
-	{
-		int newDef = 0;
-
-		if (currentAttack->isDefended)
-		{
-			newDef = currentAttack->defender->id + 1;
-		}
-		else
-		{
-			//If not defended, give all cards to the defender
-			for (CardPair* pair : currentAttack->cardPairs)
-			{
-				currentAttack->defender->addCard(pair->attack, false);
-				if (pair->defense != nullptr) currentAttack->defender->addCard(pair->defense, false);
-			}
-			newDef = currentAttack->defender->id + 2;
-		}
-
-		stockUpCards(currentAttack->defender, currentAttack->attacker1, currentAttack->attacker2);
-
-		//Clear the bord and start a new attack
-		delete currentAttack;
-		currentAttack = new Attack(getPlayer(newDef), getPlayer(newDef - 1), getPlayer(newDef + 1), false);
-		durak->attackUi->refresh();
-		game->updatePlayerStatus();
-	}
-
 }
 
 void Game::stockUpCards(Player* def, Player* att1, Player* att2)
@@ -219,10 +190,10 @@ Player* Game::getPlayer(int id)
 	return players[index];
 }
 
-Card* Game::getCard(CardType type, std::string name)
+Card* getCard(std::string id)
 {
 	for (Card* card : cardRegister)
 	{
-		if (card->type == type && card->name == name) return card;
+		if (card->id == id) return card;
 	}
 }

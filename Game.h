@@ -8,37 +8,38 @@
 #include "string"
 
 const std::string VERSION = "Dev";
-const std::string VERDATE = "26.04.2025";
+const std::string VERDATE = "27.04.2025";
 
 class Game
 {
-public:
+private:
 	std::vector<Player*> players;
+
+	void genCards();
+	void initialDraw();
+	void stockUpCards(Player* p1, Player* p2, Player* p3);
+
+public:
 	std::vector<Card*> cardStack;
 	Card* selectedCard;
 	Attack* currentAttack;
-	CardType trump;
 	Player* player;
-	PlayerStatus status;
+	CardType trump;
 	int playerAmount = 0;
-	bool initialized;
 
 	~Game();
 	Player* getPlayer(int id);
-	Card* getCard(CardType type, std::string name);
 	void preInit(int playerAmount, int playerId);
 	void postInit();
-	void initialDraw();
-	void genCards();
 	void tick();
-	void setPlayer(int id);
 	void drawCard(Player* player);
-	void stockUpCards(Player* p1, Player* p2, Player* p3);
+	void setCurrentPlayer(int id);
 	void setTrump(CardType type);
-	void updatePlayerStatus();
 };
 
 inline Game* game;
 inline Durak* durak;
 inline QTimer* gameTimer;
 inline std::vector<Card*> cardRegister;
+
+Card* getCard(std::string id);

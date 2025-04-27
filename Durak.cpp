@@ -66,7 +66,7 @@ void Durak::setDefender(int id)
 
 void Durak::setTrump(CardType type)
 {
-	lblTrump->setText(QString::fromStdString(std::format("Trump: {}", strFromType(type))));
+	lblTrump->setText(QString::fromStdString(std::format("Trump: {}", Card::strFromType(type))));
 }
 
 void Durak::setPlayerStatus(PlayerStatus status)

@@ -7,8 +7,6 @@
 inline Server* server = nullptr;
 inline Client* client = nullptr;
 
-inline int initResponses = 0;
-
 enum PacketType
 {
 	INIT = 0,
@@ -20,7 +18,7 @@ enum PacketType
 	STARTATTACK = 6,
 	ADDTOATTACK = 7,
 	DEFEND = 8,
-	LEAVEATTACK = 9
+	LEAVEATTACK = 9,
 };
 
 struct Packet
