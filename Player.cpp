@@ -99,5 +99,9 @@ std::string strFromStatus(PlayerStatus status)
 		return "Attacker 2";
 	case DEFENDER:
 		return "Defender";
+	case FINISHED:
+		return "Finished";
+	case NONE:
+		return "None";
 	}
 }
