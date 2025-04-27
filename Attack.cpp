@@ -40,10 +40,13 @@ void Attack::createAttack(Player* def, Player* att1, Player* att2, bool netCall)
 
 void Attack::finish()
 {
-	for (CardPair* pair : cardPairs)
+	if (!isDefended)
 	{
-		defender->addCard(pair->attack, false);
-		if (pair->defense != nullptr) defender->addCard(pair->defense, false);
+		for (CardPair* pair : cardPairs)
+		{
+			defender->addCard(pair->attack, false);
+			if (pair->defense != nullptr) defender->addCard(pair->defense, false);
+		}
 	}
 
 	delete this;
