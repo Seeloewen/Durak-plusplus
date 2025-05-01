@@ -12,9 +12,7 @@ public:
 	void pbConnect_Clicked();
 	void pbStartServer_Clicked();
 	void pbStartGame_Clicked();
-	int exec() override;
 
 private:
-	int result = 0;
 	Ui::MenuClass ui;
 };

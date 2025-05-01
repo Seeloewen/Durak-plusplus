@@ -1,13 +1,36 @@
-#include <qstring.h>
-#include "Player.h"
-#include "Card.h"
-#include <iostream>
-#include "Game.h"
-#include "Durak.h"
 #include "Attack.h"
+#include "Card.h"
+#include "Durak.h"
+#include "Game.h"
 #include "LogUtil.h"
 #include "NetworkHandler.h"
+#include "Player.h"
 #include "TextureManager.h"
+#include <iostream>
+#include <qstring.h>
+#include <qtimer.h>
+
+void startGame() //Should only executed by server
+{
+	game->preInit(server->clients.size() + 1, 0);
+
+	//Start the game for everyone
+	for (Client* client : server->clients)
+	{
+		sendPacketOnly(client->id, INIT, std::format("{};{};{}", std::to_string(server->clients.size() + 1), std::to_string(client->id), std::to_string(game->trump)));
+	}
+}
+
+void resetGame()
+{
+	delete game;
+
+	if (isServer())
+	{
+		sendPacket(RESET);
+		startGame();
+	}
+}
 
 Game::~Game()
 {
@@ -22,7 +45,7 @@ Game::~Game()
 	}
 
 	delete currentAttack;
-
+	durak->close();
 	cleanUpTextures();
 }
 
@@ -30,8 +53,8 @@ void Game::preInit(int playerAmount, int playerId)
 {
 	//Initiliaze the game
 	initTextures();
-	durak->init();
 	genCards();
+	durak = new Durak();
 	this->playerAmount = playerAmount;
 
 	//Init players
@@ -86,8 +109,44 @@ void Game::tick()
 
 		//Clear the bord and start a new attack
 		currentAttack->finish();
-		Attack::createAttack(getPlayer(newDef), getPlayer(newDef - 1), getPlayer(newDef + 1), false);
+
+		//Check if only one player is remaining (game done), else start a new attack
+		if (getFinishedPlayers() >= players.size() - 1)
+		{
+			endGame();
+			return;
+		}
+		else
+		{
+			Attack::createAttack(getPlayer(newDef), getPlayer(newDef - 1), getPlayer(newDef + 1), false);
+		}
 	}
+}
+
+void Game::endGame()
+{
+	if (isServer)
+	{
+		gameTimer->stop();
+		sendPacket(ENDGAME);
+	}
+
+	durak->showEndScreen(player->finalPos);
+}
+
+int Game::getFinishedPlayers()
+{
+	//Count the amount of players that are finished
+	int playersDone = 0;
+	for (Player* player : players)
+	{
+		if (player->getStatus() == FINISHED)
+		{
+			playersDone++;
+		}
+	}
+
+	return playersDone;
 }
 
 void Game::setCurrentPlayer(int id)

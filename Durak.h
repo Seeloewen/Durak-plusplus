@@ -15,11 +15,13 @@ class Durak : public QMainWindow
 {
 	Q_OBJECT
 
+private:
+	void initUi();
+
 public:
 	Durak(QWidget* parent = nullptr);
 	Ui::DurakClass ui;
 	~Durak();
-	void init();
 	void tick();
 	void timerStart();
 	void btnLeaveAttack_Clicked();
@@ -28,6 +30,7 @@ public:
 	void setTrump(CardType type);
 	void setPlayerStatus(PlayerStatus status);
 	void writeAttackLog(std::string message);
+	void showEndScreen(int finalPos);
 
 	//Widgets
 	HandUi* handUi;

@@ -104,6 +104,7 @@
   <ItemGroup>
     <ClCompile Include="Attack.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="HandledMethods.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="LogUtil.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -118,7 +119,7 @@
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Durak.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Main.cpp" />
     <QtUic Include="Log.ui" />
     <QtUic Include="Menu.ui" />
   </ItemGroup>

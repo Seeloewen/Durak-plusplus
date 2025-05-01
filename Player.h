@@ -19,6 +19,7 @@ public:
 	Player(int id);
 	std::vector<Card*> hand;
 	int id;
+	int finalPos;
 	void addCard(Card* card, bool netCall);
 	void removeCard(Card* card, bool netCall);
 	bool invalidHand();

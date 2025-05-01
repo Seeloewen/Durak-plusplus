@@ -19,6 +19,8 @@ enum PacketType
 	ADDTOATTACK = 7,
 	DEFEND = 8,
 	LEAVEATTACK = 9,
+	ENDGAME = 10,
+	RESET = 11
 };
 
 struct Packet
@@ -36,6 +38,8 @@ void sendPacket(PacketType type);
 void sendPacket(PacketType type, std::string message);
 void sendPacketOnly(int id, PacketType type, std::string message);
 void handlePacket(Packet* packet);
+void startServer(unsigned int port);
+void connectAsClient(std::string ip, unsigned int port);
 
 void handleInit(std::vector<std::string> args);
 void handleInitResponse(std::vector<std::string> args);
@@ -47,3 +51,5 @@ void handleStartAttack(std::vector<std::string> args);
 void handleAddToAttack(std::vector<std::string> args);
 void handleDefend(std::vector<std::string> args);
 void handleLeaveAttack(std::vector<std::string> args);
+void handleEndGame(std::vector<std::string> args);
+void handleReset(std::vector<std::string> args);

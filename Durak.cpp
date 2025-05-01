@@ -12,23 +12,26 @@
 Durak::Durak(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
+	setAttribute(Qt::WA_DeleteOnClose);
+	initUi();
+	this->resize(1280, 720);
+
+	gameTimer = new QTimer(this);
+	connect(gameTimer, &QTimer::timeout, this, &Durak::tick);
 }
 
 Durak::~Durak()
 {
+	
 	if (gameTimer != nullptr)
 	{
 		gameTimer->stop();
 	}
 }
 
-void Durak::init()
+void Durak::initUi()
 {
-	gameTimer = new QTimer(this);
-	connect(gameTimer, &QTimer::timeout, this, &Durak::tick);
-
-	this->resize(1280, 720);
-
+	//Create UI components
 	handUi = new HandUi(this);
 	attackUi = new AttackUi(this);
 	lblPlayerId = new QLabel(this);
@@ -38,6 +41,7 @@ void Durak::init()
 	btnLeaveAttack = new QPushButton("Leave Attack", this);
 	teAttackLog = new QTextEdit(this);
 
+	//Setup ui components
 	connect(btnLeaveAttack, &QPushButton::clicked, this, &Durak::btnLeaveAttack_Clicked);
 	btnLeaveAttack->move(width() - 150, 20);
 	btnLeaveAttack->resize(120, 50);
@@ -77,6 +81,11 @@ void Durak::setPlayerStatus(PlayerStatus status)
 void Durak::writeAttackLog(std::string message)
 {
 	teAttackLog->append(QString::fromStdString(message));
+}
+
+void Durak::showEndScreen(int finalPos)
+{
+
 }
 
 void Durak::tick()

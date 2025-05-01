@@ -35,7 +35,12 @@ public:
 	void drawCard(Player* player);
 	void setCurrentPlayer(int id);
 	void setTrump(CardType type);
+	int getFinishedPlayers();
+	void endGame();
 };
+
+void startGame();
+void resetGame();
 
 inline Game* game;
 inline Durak* durak;
