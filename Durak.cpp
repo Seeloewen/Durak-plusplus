@@ -13,7 +13,6 @@ Durak::Durak(QWidget* parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
 	setAttribute(Qt::WA_DeleteOnClose);
-	initUi();
 	this->resize(1280, 720);
 
 	gameTimer = new QTimer(this);
@@ -22,7 +21,6 @@ Durak::Durak(QWidget* parent) : QMainWindow(parent)
 
 Durak::~Durak()
 {
-	
 	if (gameTimer != nullptr)
 	{
 		gameTimer->stop();
@@ -34,6 +32,7 @@ void Durak::initUi()
 	//Create UI components
 	handUi = new HandUi(this);
 	attackUi = new AttackUi(this);
+	endScreen = new EndScreen(this);
 	lblPlayerId = new QLabel(this);
 	lblCurrentDefender = new QLabel(this);
 	lblTrump = new QLabel(this);
@@ -85,7 +84,9 @@ void Durak::writeAttackLog(std::string message)
 
 void Durak::showEndScreen(int finalPos)
 {
-
+	endScreen->show();
+	endScreen->raise();
+	endScreen->setFinalPos(finalPos);
 }
 
 void Durak::tick()

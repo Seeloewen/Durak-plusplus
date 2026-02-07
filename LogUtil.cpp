@@ -34,8 +34,8 @@ void logE(std::string message)
 void logT(LogType type, std::string message)
 {
 	//Log message invoked on the gui thread for cross-thread logging
-	QObject* d = durak;
-	QMetaObject::invokeMethod(durak, [d, type, message]() {
+	QObject* a = app;
+	QMetaObject::invokeMethod(app, [a, type, message]() {
 		log(type, message);
 		}, Qt::QueuedConnection);
 }

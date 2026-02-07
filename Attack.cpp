@@ -31,7 +31,7 @@ void Attack::createAttack(Player* def, Player* att1, Player* att2, bool netCall)
 	durak->teAttackLog->clear();
 	durak->writeAttackLog("Started new attack");
 	durak->attackUi->refresh();
-	durak->setPlayerStatus(game->player->getStatus()); //TODO: method in "game" to update player status, accounting for future player status widget
+	game->updatePlayers();
 
 	if (!netCall) sendPacket(STARTATTACK, std::format("{};{};{}", std::to_string(def->id), std::to_string(att1->id), std::to_string(att2->id)));
 	
@@ -49,6 +49,7 @@ void Attack::finish()
 		}
 	}
 
+	game->updatePlayers();
 	delete this;
 }
 
@@ -107,7 +108,7 @@ void Attack::leave(Player* player, bool netCall)
 	//Remove player from attack
 	if (!vectorContains(quitPlayers, player))
 	{
-		durak->writeAttackLog(std::format("{} left attack", strFromStatus(player->getStatus())));
+		durak->writeAttackLog(std::format("{} left attack", strFromStatus(player->status)));
 		quitPlayers.push_back(player);
 	}
 

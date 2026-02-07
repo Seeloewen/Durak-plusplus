@@ -69,7 +69,7 @@ void startServer(unsigned int port)
 		game = new Game();
 		server = new Server();
 
-		std::thread serverThread([&]() {
+		std::thread serverThread([=]() {
 			server->start(port);
 			});
 		serverThread.detach();
@@ -82,7 +82,7 @@ void connectAsClient(std::string ip, unsigned int port)
 	{
 		game = new Game();
 		client = new Client(0);
-		std::thread clientThread([&]() {
+		std::thread clientThread([=]() {
 			client->connect(ip, port);
 			});
 		clientThread.detach();
@@ -153,6 +153,12 @@ void handlePacket(Packet* packet)
 		break;
 	case LEAVEATTACK:
 		handleLeaveAttack(packet->args);
+		break;
+	case ENDGAME:
+		handleEndGame(packet->args);
+		break;
+	case RESET:
+		handleReset(packet->args);
 		break;
 	default:
 		return;

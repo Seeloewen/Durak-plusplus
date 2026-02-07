@@ -1,6 +1,8 @@
 #include "Widgets.h"
 #include "Game.h"
 #include "TextureManager.h"
+#include <qpushbutton.h>
+#include <qlabel.h>
 
 //-- HandUi --//
 
@@ -24,13 +26,12 @@ void HandUi::refresh()
 	}
 	cards.clear();
 
-
 	int amountCards = player->hand.size();
 	int space = 22;
 	int prev = space;
 
 	//What even is this :skull:
-	if (amountCards > 10) space = 0.0552083333 * amountCards * amountCards * amountCards - 2.76875 * amountCards * amountCards + 41.1791667 * amountCards - 202.125;
+	if (amountCards > 10) space = (width() - 44 - (amountCards * 100)) / amountCards - 1;
 
 	for (Card* card : player->hand)
 	{
@@ -143,4 +144,59 @@ void CardUi::setCard(Card* card)
 	image->setPixmap(scaledPixmap);
 
 	update();
+}
+
+//-- EndScreen --//
+
+EndScreen::EndScreen(QWidget* parent) : QWidget(parent)
+{
+	lblHeader = new QLabel("Game Over!", this);
+	lblStatus = new QLabel(this);
+	pbExit = new QPushButton("Exit", this);
+	pbRestart = new QPushButton("Restart", this);
+
+	setGeometry(350, 200, 600, 250);
+	setStyleSheet("background-color: rgb(154, 154, 154);");
+
+	lblHeader->move(220, 25);
+	lblStatus->move(75, 130);
+	pbExit->move(170, 200);
+	pbRestart->move(320, 200);
+pbRestart->setDisabled(true);
+
+	pbExit->resize(100, 30);
+	pbRestart->resize(100, 30);
+	lblStatus->resize(500, lblStatus->height());
+	lblStatus->setFont(QFont("Arial", 15));
+	lblHeader->setFont(QFont("Arial", 20));
+	pbExit->setStyleSheet("background-color: white; color: black;");
+
+
+	connect(pbRestart, &QPushButton::clicked, this, &EndScreen::pbRestart_Click);
+	connect(pbExit, &QPushButton::clicked, this, &EndScreen::pbExit_Click);
+
+	hide();
+}
+
+void EndScreen::setFinalPos(int finalPos)
+{
+	if (finalPos == 0)
+	{
+		lblStatus->setText("You did not get rid of your cards and lost the game!");
+	}
+	else
+	{
+		lblStatus->setText(QString::fromStdString(std::format("Congrats! You finished as #{}!", finalPos)));
+	}
+}
+
+void EndScreen::pbExit_Click()
+{
+	exit(0);
+}
+
+void EndScreen::pbRestart_Click()
+{
+	resetGame();
+	hide();
 }

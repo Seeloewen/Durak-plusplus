@@ -6,6 +6,7 @@
 #include "Durak.h"
 #include "Attack.h"
 #include "string"
+#include <qapplication.h>
 
 const std::string VERSION = "Dev";
 const std::string VERDATE = "27.04.2025";
@@ -13,13 +14,12 @@ const std::string VERDATE = "27.04.2025";
 class Game
 {
 private:
-	std::vector<Player*> players;
-
 	void genCards();
 	void initialDraw();
 	void stockUpCards(Player* p1, Player* p2, Player* p3);
 
 public:
+	std::vector<Player*> players;
 	std::vector<Card*> cardStack;
 	Card* selectedCard;
 	Attack* currentAttack;
@@ -35,6 +35,7 @@ public:
 	void drawCard(Player* player);
 	void setCurrentPlayer(int id);
 	void setTrump(CardType type);
+	void updatePlayers();
 	int getFinishedPlayers();
 	void endGame();
 };
@@ -42,6 +43,7 @@ public:
 void startGame();
 void resetGame();
 
+inline QApplication* app;
 inline Game* game;
 inline Durak* durak;
 inline QTimer* gameTimer;

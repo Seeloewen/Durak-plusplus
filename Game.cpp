@@ -55,6 +55,7 @@ void Game::preInit(int playerAmount, int playerId)
 	initTextures();
 	genCards();
 	durak = new Durak();
+	durak->initUi();
 	this->playerAmount = playerAmount;
 
 	//Init players
@@ -131,6 +132,8 @@ void Game::endGame()
 		sendPacket(ENDGAME);
 	}
 
+	updatePlayers();
+	durak->setPlayerStatus(game->player->status); //TODO: method in "game" to update player status, accounting for future player status widget
 	durak->showEndScreen(player->finalPos);
 }
 
@@ -140,7 +143,7 @@ int Game::getFinishedPlayers()
 	int playersDone = 0;
 	for (Player* player : players)
 	{
-		if (player->getStatus() == FINISHED)
+		if (player->status == FINISHED)
 		{
 			playersDone++;
 		}
@@ -166,7 +169,7 @@ void Game::initialDraw()
 		for (int i = 0; i < 6; i++)
 		{
 			drawCard(player);
-			if (player->invalidHand()) invalidHand = true;
+			//if (player->invalidHand()) invalidHand = true;
 		}
 	}
 
@@ -174,6 +177,9 @@ void Game::initialDraw()
 	if (invalidHand)
 	{
 		logI("Redrawing cards because a player had an invalid hand");
+
+		//TODO: Cards from player hand have to go back to stack !BUG!
+
 		for (Player* player : players) player->clearHand();
 		initialDraw();
 	}
@@ -247,6 +253,14 @@ Player* Game::getPlayer(int id)
 {
 	int index = ((id % playerAmount) + playerAmount) % playerAmount;
 	return players[index];
+}
+
+void Game::updatePlayers()
+{
+	for (Player* player : players)
+	{
+		player->updateStatus();
+	}
 }
 
 Card* getCard(std::string id)

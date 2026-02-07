@@ -20,11 +20,12 @@ public:
 	std::vector<Card*> hand;
 	int id;
 	int finalPos;
+	PlayerStatus status;
 	void addCard(Card* card, bool netCall);
 	void removeCard(Card* card, bool netCall);
 	bool invalidHand();
 	void clearHand();
-	PlayerStatus getStatus();
+	void updateStatus();
 };
 
 std::string strFromStatus(PlayerStatus status);

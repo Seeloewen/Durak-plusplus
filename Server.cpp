@@ -90,7 +90,7 @@ void Server::start(unsigned int port) {
 
 void Server::handleClient(Client* client) {
     SOCKET socket = client->clientSocket;
-    QObject* d = durak;
+    QObject* a = app;
 
     while (true) {
         uint32_t len = 0;
@@ -100,7 +100,7 @@ void Server::handleClient(Client* client) {
         std::string msg(len, '\0');
         if (!recvFull(socket, msg.data(), len)) break;
 
-        QMetaObject::invokeMethod(d, [d, msg]() {
+        QMetaObject::invokeMethod(app, [a, msg]() {
             handlePacket(getPacket(msg));
             }, Qt::QueuedConnection);
 

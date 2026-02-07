@@ -70,7 +70,7 @@ void Client::connect(std::string ip, unsigned int port) {
     freeaddrinfo(res);
     logT(Info, "Connection with the server was successfully established!");
 
-    QObject* d = durak;
+    QObject* a = app;
 
     while (true) {
         uint32_t len = 0;
@@ -80,7 +80,7 @@ void Client::connect(std::string ip, unsigned int port) {
         std::string msg(len, '\0');
         if (!recvFull(clientSocket, msg.data(), len)) break;
 
-        QMetaObject::invokeMethod(d, [d, msg]() {
+        QMetaObject::invokeMethod(app, [a, msg]() {
             handlePacket(getPacket(msg));
             }, Qt::QueuedConnection);
     }

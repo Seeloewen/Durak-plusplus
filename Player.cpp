@@ -65,28 +65,33 @@ void Player::clearHand()
 	}
 }
 
-PlayerStatus Player::getStatus()
+void Player::updateStatus()
 {
+    if(status == FINISHED) return;
+
 	if (hand.size() == 0)
 	{
-		return FINISHED;
+		status = FINISHED;
+		finalPos = game->getFinishedPlayers();
 	}
 	else if (this == game->currentAttack->attacker1)
 	{
-		return ATTACKER1;
+		status = ATTACKER1;
 	}
 	else if (this == game->currentAttack->attacker2)
 	{
-		return ATTACKER2;
+		status = ATTACKER2;
 	}
 	else if (this == game->currentAttack->defender)
 	{
-		return DEFENDER;
+		status =  DEFENDER;
 	}
 	else
 	{
-		return NONE;
+		status = NONE;
 	}
+
+	if(this == game->player) durak->setPlayerStatus(status);
 }
 
 std::string strFromStatus(PlayerStatus status)

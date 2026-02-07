@@ -18,7 +18,7 @@ Menu::Menu(QWidget* parent) : QDialog(parent)
 
 void Menu::pbConnect_Clicked()
 {
-	connectAsClient(ui.leIp->text().toStdString(), atoi(ui.lePort->text().toStdString().c_str());
+	connectAsClient(ui.leIp->text().toStdString(), atoi(ui.lePort->text().toStdString().c_str()));
 }
 
 void Menu::pbStartServer_Clicked()

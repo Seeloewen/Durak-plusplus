@@ -1,6 +1,8 @@
 #pragma once
 
 #include <qwidget.h>
+#include <qpushbutton.h>
+#include <qlabel.h>
 #include "Card.h"
 #include "Player.h"
 
@@ -35,5 +37,19 @@ public:
 	void refresh();
 	void addAttack(Card* card, int index);
 	void addDefense(Card* card, int index);
+};
+
+class EndScreen : public QWidget
+{
+public:
+	QLabel* lblHeader;
+	QLabel* lblStatus;
+	QPushButton* pbExit;
+	QPushButton* pbRestart;
+
+	EndScreen(QWidget* parent = nullptr);
+	void setFinalPos(int finalPos);
+	void pbExit_Click();
+	void pbRestart_Click();
 };
 
